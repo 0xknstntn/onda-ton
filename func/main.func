@@ -14,7 +14,7 @@
 #include "lib/user-lend.func";
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
-	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell loan) = storage::load_data();
+	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
 	int op = in_msg_body~load_uint(32);
 	int query_id = in_msg_body~load_uint(64);
 	slice sender_address = utils::parse_sender_address(in_msg_full);
