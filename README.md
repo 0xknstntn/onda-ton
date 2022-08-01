@@ -1,4 +1,4 @@
-# onda-lending
+# Onda Lending
 Core smart contracts of Onda Lending
 
 
