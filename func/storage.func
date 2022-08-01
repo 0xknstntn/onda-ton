@@ -1,6 +1,6 @@
 (slice, slice, slice, slice, cell, cell) storage::load_data() inline {
         slice ds = get_data().begin_parse();
-        return (ds~load_msg_addr(), ds~load_msg_addr(), ds~load_msg_addr(), ds~load_msg_addr(), ds~load_ref(), ds~load_ref());
+        return (ds~load_msg_addr(), ds~load_msg_addr(), ds~load_msg_addr(), ds~load_msg_addr(), ds~load_dict(), ds~load_dict());
 }
 
 () storage::save_data(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell loan) impure inline {

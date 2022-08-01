@@ -13,7 +13,7 @@ int query::delete_lend() asm "0x15f90 PUSHINT";
 int query::delete_borrow() asm "0x1adb0 PUSHINT";
 
 
-int admin_op::change_admin() asm "50 PUSHINT";
-int admin_op::change_wallet_x() asm "51 PUSHINT";
-int admin_op::change_minter() asm "52 PUSHINT";
-int admin_op::change_wallet_o() asm "53 PUSHINT";
+int admin_op::change_admin() asm "5000 PUSHINT";
+int admin_op::change_wallet_x() asm "5100 PUSHINT";
+int admin_op::change_minter() asm "5200 PUSHINT";
+int admin_op::change_wallet_o() asm "5300 PUSHINT";

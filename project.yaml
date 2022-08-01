@@ -3,4 +3,7 @@ contract:
   func:
     - func/main.func
   tests:
-    - tests/test1.func
+    - tests/test-admin.func
+    - tests/test-get-method.func
+    - tests/test-borrow.func
+    - tests/test-lend.func

@@ -30,11 +30,10 @@
 			borrow::delete_borrow(in_msg_body);
 		}
 	}
-
-	if (op == op::new_borrow()) { borrow::new_borrow(in_msg_body, sender_address, msg_value, query_id); }
-	if (op == admin_op::change_admin()) { admin::change_admin(in_msg_body, sender_address); }
-	if (op == admin_op::change_wallet_x()) { admin::change_wallet_x(in_msg_body, sender_address); }
-	if (op == admin_op::change_minter()) { admin::change_minter(in_msg_body, sender_address); }
-	if (op == admin_op::change_wallet_o()) { admin::change_wallet_o(in_msg_body, sender_address); }
+	if (op == op::new_borrow()) { borrow::new_borrow(in_msg_body, sender_address, msg_value, query_id); return (); }
+	if (op == admin_op::change_admin()) { admin::change_admin(in_msg_body, sender_address); return (); }
+	if (op == admin_op::change_wallet_x()) { admin::change_wallet_x(in_msg_body, sender_address); return ();}
+	if (op == admin_op::change_minter()) { admin::change_minter(in_msg_body, sender_address); return ();}
+	if (op == admin_op::change_wallet_o()) { admin::change_wallet_o(in_msg_body, sender_address); return ();}
 	throw(0xffff); 
 }

@@ -1,0 +1,37 @@
+() init_data::set_default_initial_data() impure {
+        cell owner_address = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(5, 9) 
+                .store_uint(7, 5)
+        .end_cell();
+
+        cell jetton_wallet_x_address = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(5, 9) 
+                .store_uint(8, 5)
+        .end_cell();
+
+        cell minter_otoken_address = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(5, 9) 
+                .store_uint(9, 5)
+        .end_cell();
+
+        cell jetton_wallet_otoken_address = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(5, 9) 
+                .store_uint(6, 5)
+        .end_cell();
+
+
+        set_data(
+                begin_cell()
+                        .store_slice(owner_address.begin_parse())
+                        .store_slice(jetton_wallet_x_address.begin_parse())
+                        .store_slice(minter_otoken_address.begin_parse())
+                        .store_slice(jetton_wallet_otoken_address.begin_parse())
+                        .store_dict(new_dict())
+                        .store_dict(new_dict())
+                .end_cell()
+        );
+}

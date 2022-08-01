@@ -1,0 +1,2447 @@
+"Asm.fif" include
+// automatically generated from `/Users/knstntn.asuoki/Library/Application Support/toncli/func-libs/error_codes.func` `/Users/knstntn.asuoki/Library/Application Support/toncli/func-libs/math.func` `/Users/knstntn.asuoki/Library/Application Support/toncli/func-libs/stdlib.func` `/Users/knstntn.asuoki/Library/Application Support/toncli/test-libs/tests-helpers.func` `/Users/knstntn.asuoki/Library/Application Support/toncli/test-libs/storage-test-helpers.func` `/Users/knstntn.asuoki/Library/Application Support/toncli/test-libs/address_helpers.func` `/Users/knstntn.asuoki/Library/Application Support/toncli/test-libs/bad_messages_generator.func` `/Users/knstntn.asuoki/Library/Application Support/toncli/test-libs/message_helpers.func` `/Users/knstntn.asuoki/Library/Application Support/toncli/test-libs/c5_parse_helpers.func` `/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/main.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/storage.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/utils/utils.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/utils/codes.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/utils/exitcodes.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/lib/get-methods.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/lib/admin.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/lib/user-borrow.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/func/lib/user-lend.func` `/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/tests/test-admin.func` incl:`/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/tests/init-data.func` `/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/tests/test-get-method.func` `/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/tests/test-borrow.func` `/Users/knstntn.asuoki/Documents/blockchain/Onda-Lending/tests/test-lend.func` 
+PROGRAM{
+  DECLPROC power
+  DECLPROC sqrt
+  DECLPROC avg
+  DECLPROC exp
+  DECLPROC log2
+  85860 DECLMETHOD get_c7
+  78457 DECLMETHOD invoke_method
+  93676 DECLMETHOD invoke_method_expect_fail
+  127733 DECLMETHOD assert_no_actions
+  69682 DECLMETHOD init_environment
+  104832 DECLMETHOD storage_key
+  68533 DECLMETHOD load_storage_with_tag
+  113134 DECLMETHOD save_storage_with_tag
+  114362 DECLMETHOD generate_empty_address
+  103563 DECLMETHOD generate_internal_address
+  71142 DECLMETHOD generate_internal_address_with_custom_data
+  105789 DECLMETHOD generate_external_address
+  77760 DECLMETHOD generate_external_address_with_custom_data
+  119020 DECLMETHOD generate_var_address
+  101577 DECLMETHOD generate_var_address_with_custom_data
+  DECLPROC generate_any_address
+  76887 DECLMETHOD generate_external_out_message_with_bad_source_address
+  113901 DECLMETHOD generate_external_out_message_with_bad_destination_address
+  124331 DECLMETHOD generate_external_in_message_with_bad_source_address
+  128854 DECLMETHOD generate_external_in_message_with_bad_destination_address
+  122899 DECLMETHOD generate_internal_message_with_bad_grams_data
+  105345 DECLMETHOD generate_internal_message_with_bad_init_state_data
+  66092 DECLMETHOD generate_init_state
+  86734 DECLMETHOD generate_init_state_with_data
+  70014 DECLMETHOD parse_init_state
+  129018 DECLMETHOD generate_internal_message
+  108731 DECLMETHOD generate_internal_message_relaxed
+  115574 DECLMETHOD generate_external_in_message
+  78122 DECLMETHOD generate_external_in_message_with_empty_source_address
+  94514 DECLMETHOD generate_external_out_message
+  75192 DECLMETHOD generate_external_out_message_with_empty_destination_address
+  77897 DECLMETHOD generate_external_out_message_relaxed
+  94767 DECLMETHOD parse_internal_message
+  97177 DECLMETHOD parse_external_message
+  DECLPROC parse_send_raw_message
+  DECLPROC parse_lib_code
+  DECLPROC parse_raw_reserve
+  DECLPROC parse_set_code
+  DECLPROC parse_c5
+  DECLPROC storage::load_data
+  DECLPROC storage::save_data
+  DECLPROC utils::get_null_slice
+  DECLPROC utils::get_null_cell
+  DECLPROC utils::parse_sender_address
+  93376 DECLMETHOD get_lend_info
+  110895 DECLMETHOD get_borrow_info
+  114619 DECLMETHOD get_owner_address
+  92262 DECLMETHOD get_otoken_jetton_address
+  85674 DECLMETHOD get_otoken_minter_address
+  76399 DECLMETHOD get_otoken_x_jetton_address
+  DECLPROC admin::change_admin
+  DECLPROC admin::change_wallet_x
+  DECLPROC admin::change_minter
+  DECLPROC admin::change_wallet_o
+  DECLPROC borrow::new_borrow
+  DECLPROC borrow::delete_borrow
+  DECLPROC lend::new_lend
+  DECLPROC lend::delete_lend
+  DECLPROC recv_internal
+  DECLPROC init_data::set_default_initial_data
+  DECLPROC __test_change_admin
+  DECLPROC __test_change_wallet_x
+  DECLPROC __test_change_minter
+  DECLPROC __test_change_wallet_o
+  power PROCINLINE:<{
+    //  x exponent
+    OVER	//  x exponent x
+    0 EQINT	//  x exponent _3
+    IF:<{	//  x exponent
+      2DROP	// 
+      0 PUSHINT	//  _4=0
+    }>ELSE<{	//  x exponent
+      DUP	//  x exponent exponent
+      0 EQINT	//  x exponent _6
+      IFJMP:<{	//  x exponent
+        2DROP	// 
+        1 PUSHINT	//  _7=1
+      }>	//  x exponent
+      OVER	//  x counter result
+      WHILE:<{
+        OVER	//  x counter result counter
+        1 GTINT	//  x counter result _11
+      }>DO<{	//  x counter result
+        s2 PUSH	//  x counter result x
+        MUL	//  x counter result
+        SWAP	//  x result counter
+        DEC	//  x result counter
+        SWAP	//  x counter result
+      }>	//  x counter result
+      2 1 BLKDROP2	//  result
+    }>
+  }>
+  sqrt PROCINLINE:<{
+    //  x
+    DUP	//  x x
+    0 EQINT	//  x _2
+    IF:<{	//  x
+      DROP	// 
+      0 PUSHINT	//  _3=0
+    }>ELSE<{	//  x
+      DUP	//  x x
+      4 LESSINT	//  x _5
+      IFJMP:<{	//  x
+        DROP	// 
+        1 PUSHINT	//  _6=1
+      }>	//  x
+      DUP	//  x x
+      INC	//  x _9
+      1 RSHIFT#	//  x z
+      OVER	//  x z y
+      WHILE:<{
+        2DUP	//  x z y z y
+        LESS	//  x z y _13
+      }>DO<{	//  x z y
+        DROP	//  x z
+        s0 s1 s0 PUSH3	//  x z y x z
+        DIV	//  x z y _14
+        ROT	//  x y _14 z
+        ADD	//  x y _15
+        1 RSHIFT#	//  x y z
+        SWAP	//  x z y
+      }>	//  x z y
+      2 1 BLKDROP2	//  y
+    }>
+  }>
+  avg PROCINLINE:<{
+    //  x y
+    ADD	//  _2
+    1 RSHIFT#	//  _4
+  }>
+  exp PROCINLINE:<{
+    //  x
+    DUP	//  x x
+    -1 GTINT	//  x _2
+    IF:<{	//  x
+      POW2	//  _3
+    }>ELSE<{	//  x
+      1 PUSHINT	//  x _6=1
+      SWAP	//  _6=1 x
+      NEGATE	//  _6=1 _8
+      RSHIFT	//  _3
+    }>
+  }>
+  log2 PROCINLINE:<{
+    //  x
+    0 PUSHINT	//  x n=0
+    7 PUSHPOW2	//  x n=0 _3=128
+    exp INLINECALLDICT	//  x n=0 _4
+    s2 s(-1) PUXC	//  x n=0 x _4
+    GEQ	//  x n=0 _5
+    IF:<{	//  x n=0
+      DROP	//  x
+      128 RSHIFT#	//  x
+      7 PUSHPOW2	//  x n
+    }>	//  x n
+    64 PUSHINT	//  x n _10=64
+    exp INLINECALLDICT	//  x n _11
+    s2 s(-1) PUXC	//  x n x _11
+    GEQ	//  x n _12
+    IF:<{	//  x n
+      SWAP	//  n x
+      64 RSHIFT#	//  n x
+      SWAP	//  x n
+      64 ADDCONST	//  x n
+    }>	//  x n
+    32 PUSHINT	//  x n _17=32
+    exp INLINECALLDICT	//  x n _18
+    s2 s(-1) PUXC	//  x n x _18
+    GEQ	//  x n _19
+    IF:<{	//  x n
+      SWAP	//  n x
+      32 RSHIFT#	//  n x
+      SWAP	//  x n
+      32 ADDCONST	//  x n
+    }>	//  x n
+    16 PUSHINT	//  x n _24=16
+    exp INLINECALLDICT	//  x n _25
+    s2 s(-1) PUXC	//  x n x _25
+    GEQ	//  x n _26
+    IF:<{	//  x n
+      SWAP	//  n x
+      16 RSHIFT#	//  n x
+      SWAP	//  x n
+      16 ADDCONST	//  x n
+    }>	//  x n
+    8 PUSHINT	//  x n _31=8
+    exp INLINECALLDICT	//  x n _32
+    s2 s(-1) PUXC	//  x n x _32
+    GEQ	//  x n _33
+    IF:<{	//  x n
+      SWAP	//  n x
+      8 RSHIFT#	//  n x
+      SWAP	//  x n
+      8 ADDCONST	//  x n
+    }>	//  x n
+    4 PUSHINT	//  x n _38=4
+    exp INLINECALLDICT	//  x n _39
+    s2 s(-1) PUXC	//  x n x _39
+    GEQ	//  x n _40
+    IF:<{	//  x n
+      SWAP	//  n x
+      4 RSHIFT#	//  n x
+      SWAP	//  x n
+      4 ADDCONST	//  x n
+    }>	//  x n
+    2 PUSHINT	//  x n _45=2
+    exp INLINECALLDICT	//  x n _46
+    s2 s(-1) PUXC	//  x n x _46
+    GEQ	//  x n _47
+    IF:<{	//  x n
+      SWAP	//  n x
+      2 RSHIFT#	//  n x
+      SWAP	//  x n
+      2 ADDCONST	//  x n
+    }>	//  x n
+    1 PUSHINT	//  x n _52=1
+    exp INLINECALLDICT	//  x n _53
+    s1 s2 XCHG	//  n x _53
+    GEQ	//  n _54
+    IF:<{	//  n
+      INC	//  n
+    }>	//  n
+  }>
+  get_c7 PROCINLINE:<{
+    // 
+    124711402 PUSHINT	//  _2=124711402
+    0 PUSHINT	//  _2=124711402 _3=0
+    DUP	//  _2=124711402 _3=0 _4=0
+    NOW	//  _2=124711402 _3=0 _4=0 _5
+    1 PUSHINT	//  _2=124711402 _3=0 _4=0 _5 _6=1
+    DUP	//  _2=124711402 _3=0 _4=0 _5 _6=1 _7=1
+    239 PUSHINT	//  _2=124711402 _3=0 _4=0 _5 _6=1 _7=1 _8=239
+    1000000000 PUSHINT	//  _2=124711402 _3=0 _4=0 _5 _6=1 _7=1 _8=239 _10=1000000000
+    PUSHNULL	//  _2=124711402 _3=0 _4=0 _5 _6=1 _7=1 _8=239 _10=1000000000 _11
+    PAIR	//  _2=124711402 _3=0 _4=0 _5 _6=1 _7=1 _8=239 _12
+    MYADDR	//  _2=124711402 _3=0 _4=0 _5 _6=1 _7=1 _8=239 _12 _13
+    CONFIGROOT	//  _2=124711402 _3=0 _4=0 _5 _6=1 _7=1 _8=239 _12 _13 _14
+    10 TUPLE	//  _15
+    SINGLE	//  _16
+  }>
+  invoke_method PROC:<{
+    //  fun args
+    {
+    c7 PUSH DUP FIRST
+    GASLIMITSTEMP SWAP DROP
+    11 SETINDEX 0 SETINDEX c7 POP
+    } : save-gas-remaining
+    {
+    GASLIMITSTEMP SWAP DROP
+    11 GETPARAM SWAP SUB
+    145 PUSHINT SUB
+    } : compute-gas-used
+    NEWC ENDC c5 POP
+    RESETLOADEDCELLS
+    255 PUSHINT EXPLODEVAR
+    DUP INC ROLLX
+    <{
+    <{
+    save-gas-remaining
+    EXECUTE
+    compute-gas-used
+    DEPTH DEC ROLLREVX
+    DEPTH DEC TUPLEVAR
+    ZERO ROTREV
+    }> PUSHCONT
+    <{
+    compute-gas-used
+    ROT DROP NIL
+    }> PUSHCONT
+    TRY
+    }> PUSHCONT
+    ROT INC -1 PUSHINT
+    CALLXVARARGS	//  exit_code gas_used return_values
+    s2 PUSH	//  exit_code gas_used return_values exit_code
+    0 NEQINT	//  exit_code gas_used return_values _7
+    s3 PUSH	//  exit_code gas_used return_values _7 exit_code
+    1 NEQINT	//  exit_code gas_used return_values _7 _9
+    AND	//  exit_code gas_used return_values _10
+    s1 s3 XCHG	//  return_values gas_used exit_code _10
+    THROWANYIF
+    SWAP	//  gas_used return_values
+  }>
+  invoke_method_expect_fail PROC:<{
+    //  fun args
+    {
+    c7 PUSH DUP FIRST
+    GASLIMITSTEMP SWAP DROP
+    11 SETINDEX 0 SETINDEX c7 POP
+    } : save-gas-remaining
+    {
+    GASLIMITSTEMP SWAP DROP
+    11 GETPARAM SWAP SUB
+    145 PUSHINT SUB
+    } : compute-gas-used
+    NEWC ENDC c5 POP
+    RESETLOADEDCELLS
+    255 PUSHINT EXPLODEVAR
+    DUP INC ROLLX
+    <{
+    <{
+    save-gas-remaining
+    EXECUTE
+    compute-gas-used
+    DEPTH DEC ROLLREVX
+    DEPTH DEC TUPLEVAR
+    ZERO ROTREV
+    }> PUSHCONT
+    <{
+    compute-gas-used
+    ROT DROP NIL
+    }> PUSHCONT
+    TRY
+    }> PUSHCONT
+    ROT INC -1 PUSHINT
+    CALLXVARARGS	//  _13 _14 _15
+    DROP	//  exit_code gas_used
+    OVER	//  exit_code gas_used exit_code
+    0 EQINT	//  exit_code gas_used _8
+    s0 s2 XCHG	//  _8 gas_used exit_code
+    1 EQINT	//  _8 gas_used _10
+    s1 s2 XCHG	//  gas_used _8 _10
+    OR	//  gas_used _11
+    201 THROWIF
+  }>
+  assert_no_actions PROCINLINE:<{
+    // 
+    c5 PUSH CTOS	//  _1
+    SEMPTY	//  _2
+    NOT	//  _3
+    202 THROWIF
+  }>
+  init_environment PROC:<{
+    // 
+    PUSHNULL	//  _0
+    NEWC	//  _0 _1
+    STDICT	//  _2
+    ENDC	//  _3
+    c4 POP
+  }>
+  storage_key PROC:<{
+    //  tag
+    2824609491042946229920590003095732224 PUSHINTX	//  tag _3
+    SWAP	//  _3 tag
+    ADD	//  _4
+  }>
+  load_storage_with_tag PROC:<{
+    //  tag
+    storage_key CALLDICT	//  _1
+    c4 PUSH	//  _1 _2
+    CTOS	//  _1 _3
+    PLDDICT	//  _1 _4
+    8 PUSHPOW2	//  _1 _4 _5=256
+    DICTIGETOPTREF	//  _6
+  }>
+  save_storage_with_tag PROC:<{
+    //  tag storage
+    c4 PUSH	//  tag storage _3
+    CTOS	//  tag storage _4
+    PLDDICT	//  tag storage dict
+    s0 s2 XCHG	//  dict storage tag
+    storage_key CALLDICT	//  dict storage _7
+    ROT
+    8 PUSHPOW2	//  storage _7 dict _8=256
+    DICTISETREF	//  dict
+    NEWC	//  dict _10
+    STDICT	//  _11
+    ENDC	//  _12
+    c4 POP
+  }>
+  generate_empty_address PROC:<{
+    // 
+    0 PUSHINT	//  _0=0
+    NEWC	//  _0=0 _1
+    2 STU	//  _3
+    ENDC	//  _4
+    CTOS	//  _5
+  }>
+  generate_internal_address PROC:<{
+    // 
+    RANDU256	//  address
+    -1 PUSHINT	//  address _3=-1
+    0 PUSHINT	//  address _3=-1 _4=0
+    2 PUSHINT	//  address _3=-1 _4=0 _5=2
+    NEWC	//  address _3=-1 _4=0 _5=2 _6
+    2 STU	//  address _3=-1 _4=0 _8
+    1 STU	//  address _3=-1 _10
+    8 STI	//  address _12
+    256 STU	//  _14
+    ENDC	//  _15
+    CTOS	//  address_cell
+  }>
+  generate_internal_address_with_custom_data PROC:<{
+    //  anycast workchain_id address
+    2 PUSHINT	//  anycast workchain_id address _4=2
+    NEWC	//  anycast workchain_id address _4=2 _5
+    2 STU	//  anycast workchain_id address _7
+    s1 s3 XCHG	//  address workchain_id anycast _7
+    1 STU	//  address workchain_id _9
+    8 STI	//  address _11
+    256 STU	//  _13
+    ENDC	//  _14
+    CTOS	//  address_cell
+  }>
+  generate_external_address PROC:<{
+    //  address_length
+    RANDU256	//  address_length address
+    1 PUSHINT	//  address_length address _4=1
+    NEWC	//  address_length address _4=1 _5
+    2 STU	//  address_length address _7
+    s2 s(-1) PUXC	//  address_length address address_length _7
+    9 STU	//  address_length address _9
+    ROT	//  address _9 address_length
+    STUX	//  _10
+    ENDC	//  _11
+    CTOS	//  address_cell
+  }>
+  generate_external_address_with_custom_data PROC:<{
+    //  address_length address
+    1 PUSHINT	//  address_length address _3=1
+    NEWC	//  address_length address _3=1 _4
+    2 STU	//  address_length address _6
+    s2 s(-1) PUXC	//  address_length address address_length _6
+    9 STU	//  address_length address _8
+    ROT	//  address _8 address_length
+    STUX	//  _9
+    ENDC	//  _10
+    CTOS	//  address_cell
+  }>
+  generate_var_address PROC:<{
+    //  address_length
+    DUP
+    8 PUSHPOW2	//  address_length address_length _1=256
+    GREATER	//  address_length _2
+    IFJMP:<{	//  address_length
+      RANDU256	//  address_length address
+      RANDU256	//  address_length address address_secondpart
+      -1 PUSHINT	//  address_length address address_secondpart _8=-1
+      0 PUSHINT	//  address_length address address_secondpart _8=-1 _9=0
+      3 PUSHINT	//  address_length address address_secondpart _8=-1 _9=0 _10=3
+      NEWC	//  address_length address address_secondpart _8=-1 _9=0 _10=3 _11
+      2 STU	//  address_length address address_secondpart _8=-1 _9=0 _13
+      1 STU	//  address_length address address_secondpart _8=-1 _15
+      s1 s4 XCHG	//  _8=-1 address address_secondpart address_length _15
+      9 STU	//  _8=-1 address address_secondpart _17
+      s1 s3 XCHG	//  address_secondpart address _8=-1 _17
+      8 STI	//  address_secondpart address _19
+      256 STU	//  address_secondpart _21
+      256 STU	//  _23
+      ENDC	//  _24
+      CTOS	//  address_cell
+    }>	//  address_length
+    RANDU256	//  address_length address
+    -1 PUSHINT	//  address_length address _29=-1
+    0 PUSHINT	//  address_length address _29=-1 _30=0
+    3 PUSHINT	//  address_length address _29=-1 _30=0 _31=3
+    NEWC	//  address_length address _29=-1 _30=0 _31=3 _32
+    2 STU	//  address_length address _29=-1 _30=0 _34
+    1 STU	//  address_length address _29=-1 _36
+    s3 s(-1) PUXC	//  address_length address _29=-1 address_length _36
+    9 STU	//  address_length address _29=-1 _38
+    8 STI	//  address_length address _40
+    ROT	//  address _40 address_length
+    STUX	//  _41
+    ENDC	//  _42
+    CTOS	//  address_cell
+  }>
+  generate_var_address_with_custom_data PROC:<{
+    //  anycast workchain_id address_length address_slice
+    OVER
+    8 PUSHPOW2	//  anycast workchain_id address_length address_slice address_length _4=256
+    GREATER	//  anycast workchain_id address_length address_slice _5
+    IFJMP:<{	//  anycast workchain_id address_length address_slice
+      256 LDU	//  anycast workchain_id address_length addr address_slice
+      256 LDU	//  anycast workchain_id address_length addr _52 _51
+      DROP	//  anycast workchain_id address_length addr addr_second_part
+      3 PUSHINT	//  anycast workchain_id address_length addr addr_second_part _15=3
+      NEWC	//  anycast workchain_id address_length addr addr_second_part _15=3 _16
+      2 STU	//  anycast workchain_id address_length addr addr_second_part _18
+      s1 s5 XCHG	//  addr_second_part workchain_id address_length addr anycast _18
+      1 STU	//  addr_second_part workchain_id address_length addr _20
+      s1 s2 XCHG	//  addr_second_part workchain_id addr address_length _20
+      9 STU	//  addr_second_part workchain_id addr _22
+      s1 s2 XCHG	//  addr_second_part addr workchain_id _22
+      8 STI	//  addr_second_part addr _24
+      256 STU	//  addr_second_part _26
+      256 STU	//  _28
+      ENDC	//  _29
+      CTOS	//  address_cell
+    }>	//  anycast workchain_id address_length address_slice
+    256 LDU	//  anycast workchain_id address_length _54 _53
+    DROP	//  anycast workchain_id address_length addr
+    3 PUSHINT	//  anycast workchain_id address_length addr _36=3
+    NEWC	//  anycast workchain_id address_length addr _36=3 _37
+    2 STU	//  anycast workchain_id address_length addr _39
+    s1 s4 XCHG	//  addr workchain_id address_length anycast _39
+    1 STU	//  addr workchain_id address_length _41
+    s1 s(-1) PUXC	//  addr workchain_id address_length address_length _41
+    9 STU	//  addr workchain_id address_length _43
+    s1 s2 XCHG	//  addr address_length workchain_id _43
+    8 STI	//  addr address_length _45
+    SWAP	//  addr _45 address_length
+    STUX	//  _46
+    ENDC	//  _47
+    CTOS	//  address_cell
+  }>
+  generate_any_address PROC:<{
+    //  typeOfAddress
+    DUP	//  typeOfAddress typeOfAddress
+    0 EQINT	//  typeOfAddress _2
+    IFJMP:<{	//  typeOfAddress
+      DROP	// 
+      generate_empty_address CALLDICT	//  _3
+    }>	//  typeOfAddress
+    DUP	//  typeOfAddress typeOfAddress
+    1 EQINT	//  typeOfAddress _5
+    IFJMP:<{	//  typeOfAddress
+      DROP	// 
+      generate_internal_address CALLDICT	//  _6
+    }>	//  typeOfAddress
+    2 EQINT	//  _8
+    IFJMP:<{	// 
+      8 PUSHPOW2	//  _9=256
+      generate_external_address CALLDICT	//  _10
+    }>	// 
+    8 PUSHPOW2	//  _11=256
+    generate_var_address CALLDICT	//  _12
+  }>
+  generate_external_out_message_with_bad_source_address PROC:<{
+    // 
+    1 PUSHINT	//  _1=1
+    -1 PUSHINT	//  _1=1 _2=-1
+    0 PUSHINT	//  _1=1 _2=-1 _3=0
+    2 PUSHINT	//  _1=1 _2=-1 _3=0 _4=2
+    NEWC	//  _1=1 _2=-1 _3=0 _4=2 _5
+    2 STU	//  _1=1 _2=-1 _3=0 _7
+    1 STU	//  _1=1 _2=-1 _9
+    8 STI	//  _1=1 _11
+    10 STU	//  _13
+    ENDC	//  _14
+    CTOS	//  ssrc_invalid
+    0 PUSHINT	//  ssrc_invalid _16=0
+    3 PUSHINT	//  ssrc_invalid _16=0 _17=3
+    NEWC	//  ssrc_invalid _16=0 _17=3 _18
+    2 STU	//  ssrc_invalid _16=0 _20
+    1 STI	//  ssrc_invalid _22
+    SWAP	//  _22 ssrc_invalid
+    STSLICER	//  _23
+    ENDC	//  _24
+  }>
+  generate_external_out_message_with_bad_destination_address PROC:<{
+    // 
+    generate_internal_address CALLDICT	//  ssrc
+    0 PUSHINT	//  ssrc _2=0
+    3 PUSHINT	//  ssrc _2=0 _3=3
+    NEWC	//  ssrc _2=0 _3=3 _4
+    2 STU	//  ssrc _2=0 _6
+    ROT	//  _2=0 _6 ssrc
+    STSLICER	//  _2=0 _7
+    1 STI	//  _9
+    ENDC	//  _10
+  }>
+  generate_external_in_message_with_bad_source_address PROC:<{
+    // 
+    0 PUSHINT	//  _1=0
+    7 PUSHPOW2	//  _1=0 _2=128
+    1 PUSHINT	//  _1=0 _2=128 _3=1
+    NEWC	//  _1=0 _2=128 _3=1 _4
+    2 STU	//  _1=0 _2=128 _6
+    9 STU	//  _1=0 _8
+    10 STU	//  _10
+    ENDC	//  _11
+    CTOS	//  ssrc_invalid
+    2 PUSHINT	//  ssrc_invalid _13=2
+    NEWC	//  ssrc_invalid _13=2 _14
+    2 STU	//  ssrc_invalid _16
+    SWAP	//  _16 ssrc_invalid
+    STSLICER	//  _17
+    ENDC	//  _18
+  }>
+  generate_external_in_message_with_bad_destination_address PROC:<{
+    // 
+    8 PUSHPOW2	//  _1=256
+    generate_external_address CALLDICT	//  ssrc
+    0 PUSHINT	//  ssrc _3=0
+    2 PUSHINT	//  ssrc _3=0 _4=2
+    NEWC	//  ssrc _3=0 _4=2 _5
+    2 STU	//  ssrc _3=0 _7
+    ROT	//  _3=0 _7 ssrc
+    STSLICER	//  _3=0 _8
+    1 STI	//  _10
+    ENDC	//  _11
+  }>
+  generate_internal_message_with_bad_grams_data PROC:<{
+    // 
+    generate_internal_address CALLDICT	//  ssrc
+    generate_internal_address CALLDICT	//  ssrc sdest
+    1 PUSHINT	//  ssrc sdest _4=1
+    8 PUSHINT	//  ssrc sdest _4=1 _5=8
+    0 PUSHINT	//  ssrc sdest _4=1 _5=8 _6=0
+    s0 s0 s0 PUSH3	//  ssrc sdest _4=1 _5=8 _6=0 _7=0 _8=0 _9=0
+    NEWC	//  ssrc sdest _4=1 _5=8 _6=0 _7=0 _8=0 _9=0 _10
+    1 STU	//  ssrc sdest _4=1 _5=8 _6=0 _7=0 _8=0 _12
+    1 STU	//  ssrc sdest _4=1 _5=8 _6=0 _7=0 _14
+    1 STU	//  ssrc sdest _4=1 _5=8 _6=0 _16
+    1 STU	//  ssrc sdest _4=1 _5=8 _18
+    s0 s4 XCHG2	//  _5=8 sdest _4=1 _18 ssrc
+    STSLICER	//  _5=8 sdest _4=1 _19
+    ROT	//  _5=8 _4=1 _19 sdest
+    STSLICER	//  _5=8 _4=1 _20
+    s1 s2 XCHG	//  _4=1 _5=8 _20
+    4 STU	//  _4=1 _22
+    1 STU	//  _24
+    ENDC	//  _25
+  }>
+  generate_internal_message_with_bad_init_state_data PROC:<{
+    // 
+    generate_internal_address CALLDICT	//  ssrc
+    generate_internal_address CALLDICT	//  ssrc sdest
+    1 PUSHINT	//  ssrc sdest _5=1
+    s0 s0 PUSH2	//  ssrc sdest _5=1 _6=1 _7=1
+    0 PUSHINT	//  ssrc sdest _5=1 _6=1 _7=1 _8=0
+    s1 s1 s0 PUSH3	//  ssrc sdest _5=1 _6=1 _7=1 _8=0 _9=1 _10=1 _11=0
+    NEWC	//  ssrc sdest _5=1 _6=1 _7=1 _8=0 _9=1 _10=1 _11=0 _12
+    1 STU	//  ssrc sdest _5=1 _6=1 _7=1 _8=0 _9=1 _10=1 _14
+    1 STU	//  ssrc sdest _5=1 _6=1 _7=1 _8=0 _9=1 _16
+    1 STU	//  ssrc sdest _5=1 _6=1 _7=1 _8=0 _18
+    1 STU	//  ssrc sdest _5=1 _6=1 _7=1 _20
+    1 STU	//  ssrc sdest _5=1 _6=1 _22
+    1 STU	//  ssrc sdest _5=1 _24
+    1 STU	//  ssrc sdest init_state_with_bad_data
+    0 PUSHINT	//  ssrc sdest init_state_with_bad_data _27=0
+    SWAP	//  ssrc sdest _27=0 init_state_with_bad_data
+    ENDC	//  ssrc sdest _27=0 _28
+    1 PUSHINT	//  ssrc sdest _27=0 _28 _29=1
+    DUP	//  ssrc sdest _27=0 _28 _29=1 _30=1
+    1000 PUSHINT	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000
+    DUP	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000
+    PUSHNULL	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _33
+    s6 s6 s6 PUSH3	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _33 _34=0 _35=0 _36=0
+    DUP	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _33 _34=0 _35=0 _36=0 _37=0
+    NEWC	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _33 _34=0 _35=0 _36=0 _37=0 _38
+    1 STU	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _33 _34=0 _35=0 _36=0 _40
+    1 STU	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _33 _34=0 _35=0 _42
+    1 STU	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _33 _34=0 _44
+    1 STU	//  ssrc sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _33 _46
+    s0 s9 XCHG2	//  _33 sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _46 ssrc
+    STSLICER	//  _33 sdest _27=0 _28 _29=1 _30=1 _31=1000 _32=1000 _47
+    s0 s7 XCHG2	//  _33 _32=1000 _27=0 _28 _29=1 _30=1 _31=1000 _47 sdest
+    STSLICER	//  _33 _32=1000 _27=0 _28 _29=1 _30=1 _31=1000 _48
+    s5 PUSH	//  _33 _32=1000 _27=0 _28 _29=1 _30=1 _31=1000 _48 _49=0
+    STGRAMS	//  _33 _32=1000 _27=0 _28 _29=1 _30=1 _31=1000 _50
+    s1 s7 XCHG	//  _31=1000 _32=1000 _27=0 _28 _29=1 _30=1 _33 _50
+    STDICT	//  _31=1000 _32=1000 _27=0 _28 _29=1 _30=1 _51
+    s4 PUSH	//  _31=1000 _32=1000 _27=0 _28 _29=1 _30=1 _51 _52=0
+    STGRAMS	//  _31=1000 _32=1000 _27=0 _28 _29=1 _30=1 _53
+    s4 PUSH	//  _31=1000 _32=1000 _27=0 _28 _29=1 _30=1 _53 _54=0
+    STGRAMS	//  _31=1000 _32=1000 _27=0 _28 _29=1 _30=1 _55
+    s1 s5 XCHG	//  _31=1000 _30=1 _27=0 _28 _29=1 _32=1000 _55
+    64 STU	//  _31=1000 _30=1 _27=0 _28 _29=1 _57
+    s1 s5 XCHG	//  _29=1 _30=1 _27=0 _28 _31=1000 _57
+    32 STU	//  _29=1 _30=1 _27=0 _28 _59
+    s1 s3 XCHG	//  _29=1 _28 _27=0 _30=1 _59
+    1 STU	//  _29=1 _28 _27=0 _61
+    s1 s3 XCHG	//  _27=0 _28 _29=1 _61
+    1 STU	//  _27=0 _28 _63
+    STREF	//  _27=0 _64
+    1 STU	//  _66
+    ENDC	//  _67
+  }>
+  generate_init_state PROC:<{
+    // 
+    0 PUSHINT	//  _0=0
+    s0 s0 s0 PUSH3	//  _0=0 _1=0 _2=0 _3=0
+    1 PUSHINT	//  _0=0 _1=0 _2=0 _3=0 _4=1
+    s0 s1 PUSH2	//  _0=0 _1=0 _2=0 _3=0 _4=1 _5=1 _6=0
+    NEWC	//  _0=0 _1=0 _2=0 _3=0 _4=1 _5=1 _6=0 _7
+    1 STU	//  _0=0 _1=0 _2=0 _3=0 _4=1 _5=1 _9
+    1 STU	//  _0=0 _1=0 _2=0 _3=0 _4=1 _11
+    1 STU	//  _0=0 _1=0 _2=0 _3=0 _13
+    1 STU	//  _0=0 _1=0 _2=0 _15
+    1 STU	//  _0=0 _1=0 _17
+    1 STU	//  _0=0 _19
+    1 STU	//  _21
+  }>
+  generate_init_state_with_data PROC:<{
+    //  code data library
+    1 PUSHINT	//  code data library _3=1
+    s0 s0 PUSH2	//  code data library _3=1 _4=1 _5=1
+    0 PUSHINT	//  code data library _3=1 _4=1 _5=1 _6=0
+    s1 s1 s0 PUSH3	//  code data library _3=1 _4=1 _5=1 _6=0 _7=1 _8=1 _9=0
+    NEWC	//  code data library _3=1 _4=1 _5=1 _6=0 _7=1 _8=1 _9=0 _10
+    1 STU	//  code data library _3=1 _4=1 _5=1 _6=0 _7=1 _8=1 _12
+    1 STU	//  code data library _3=1 _4=1 _5=1 _6=0 _7=1 _14
+    1 STU	//  code data library _3=1 _4=1 _5=1 _6=0 _16
+    1 STU	//  code data library _3=1 _4=1 _5=1 _18
+    1 STU	//  code data library _3=1 _4=1 _20
+    s1 s5 XCHG	//  _4=1 data library _3=1 code _20
+    STREF	//  _4=1 data library _3=1 _21
+    s1 s4 XCHG	//  _3=1 data library _4=1 _21
+    1 STU	//  _3=1 data library _23
+    s1 s2 XCHG	//  _3=1 library data _23
+    STREF	//  _3=1 library _24
+    s1 s2 XCHG	//  library _3=1 _24
+    1 STU	//  library _26
+    STREF	//  _27
+  }>
+  parse_init_state PROC:<{
+    //  cs
+    NIL	//  cs parsed_tuple
+    SWAP	//  parsed_tuple cs
+    1 LDU	//  parsed_tuple maybe_five cs
+    s2 s1 XCPU	//  cs maybe_five parsed_tuple maybe_five
+    TPUSH	//  cs maybe_five parsed_tuple
+    SWAP	//  cs parsed_tuple maybe_five
+    1 EQINT	//  cs parsed_tuple _10
+    IF:<{	//  cs parsed_tuple
+      SWAP	//  parsed_tuple cs
+      5 LDU	//  parsed_tuple _12 cs
+      -ROT	//  cs parsed_tuple _12
+      TPUSH	//  cs parsed_tuple
+    }>	//  cs parsed_tuple
+    SWAP	//  parsed_tuple cs
+    1 LDU	//  parsed_tuple maybe_tick_tock cs
+    s2 s1 XCPU	//  cs maybe_tick_tock parsed_tuple maybe_tick_tock
+    TPUSH	//  cs maybe_tick_tock parsed_tuple
+    OVER	//  cs maybe_tick_tock parsed_tuple maybe_tick_tock
+    1 EQINT	//  cs maybe_tick_tock parsed_tuple _23
+    IF:<{	//  cs maybe_tick_tock parsed_tuple
+      s0 s2 XCHG	//  parsed_tuple maybe_tick_tock cs
+      1 LDU	//  parsed_tuple maybe_tick_tock _25 cs
+      s3 s3 XCHG2	//  cs maybe_tick_tock parsed_tuple _25
+      TPUSH	//  cs maybe_tick_tock parsed_tuple
+      s0 s2 XCHG	//  parsed_tuple maybe_tick_tock cs
+      1 LDU	//  parsed_tuple maybe_tick_tock _30 cs
+      s3 s3 XCHG2	//  cs maybe_tick_tock parsed_tuple _30
+      TPUSH	//  cs maybe_tick_tock parsed_tuple
+    }>	//  cs maybe_tick_tock parsed_tuple
+    s0 s2 XCHG	//  parsed_tuple maybe_tick_tock cs
+    1 LDU	//  parsed_tuple maybe_tick_tock maybe_code cs
+    s3 s3 XCHG2	//  cs maybe_tick_tock parsed_tuple maybe_code
+    TPUSH	//  cs maybe_tick_tock parsed_tuple
+    OVER	//  cs maybe_tick_tock parsed_tuple maybe_tick_tock
+    1 EQINT	//  cs maybe_tick_tock parsed_tuple _41
+    IF:<{	//  cs maybe_tick_tock parsed_tuple
+      s0 s2 XCHG	//  parsed_tuple maybe_tick_tock cs
+      LDREF	//  parsed_tuple maybe_tick_tock _43 cs
+      s3 s3 XCHG2	//  cs maybe_tick_tock parsed_tuple _43
+      TPUSH	//  cs maybe_tick_tock parsed_tuple
+    }>	//  cs maybe_tick_tock parsed_tuple
+    s0 s2 XCHG	//  parsed_tuple maybe_tick_tock cs
+    1 LDU	//  parsed_tuple maybe_tick_tock maybe_data cs
+    s3 s3 XCHG2	//  cs maybe_tick_tock parsed_tuple maybe_data
+    TPUSH	//  cs maybe_tick_tock parsed_tuple
+    SWAP	//  cs parsed_tuple maybe_tick_tock
+    1 EQINT	//  cs parsed_tuple _53
+    IF:<{	//  cs parsed_tuple
+      SWAP	//  parsed_tuple cs
+      LDREF	//  parsed_tuple _55 cs
+      -ROT	//  cs parsed_tuple _55
+      TPUSH	//  cs parsed_tuple
+    }>	//  cs parsed_tuple
+    SWAP	//  parsed_tuple cs
+    1 LDU	//  parsed_tuple maybe_library cs
+    s2 s1 XCPU	//  cs maybe_library parsed_tuple maybe_library
+    TPUSH	//  cs maybe_library parsed_tuple
+    SWAP	//  cs parsed_tuple maybe_library
+    1 EQINT	//  cs parsed_tuple _65
+    IF:<{	//  cs parsed_tuple
+      SWAP	//  parsed_tuple cs
+      LDREF	//  parsed_tuple _91 _90
+      DROP	//  parsed_tuple _67
+      TPUSH	//  parsed_tuple
+    }>ELSE<{
+      NIP	//  parsed_tuple
+    }>
+  }>
+  generate_internal_message PROC:<{
+    //  bounce ton_amount init_state payload
+    generate_internal_address CALLDICT	//  bounce ton_amount init_state payload ssrc
+    generate_internal_address CALLDICT	//  bounce ton_amount init_state payload ssrc sdest
+    1000 PUSHINT	//  bounce ton_amount init_state payload ssrc sdest _9=1000
+    DUP	//  bounce ton_amount init_state payload ssrc sdest _9=1000 _10=1000
+    PUSHNULL	//  bounce ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _11
+    0 PUSHINT	//  bounce ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _11 _12=0
+    s0 s0 PUSH2	//  bounce ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _11 _12=0 _13=0 _14=0
+    NEWC	//  bounce ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _11 _12=0 _13=0 _14=0 _15
+    1 STU	//  bounce ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _11 _12=0 _13=0 _17
+    1 STU	//  bounce ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _11 _12=0 _19
+    s1 s10 XCHG	//  _12=0 ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _11 bounce _19
+    1 STU	//  _12=0 ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _11 _21
+    s1 s9 XCHG	//  _11 ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _12=0 _21
+    1 STU	//  _11 ton_amount init_state payload ssrc sdest _9=1000 _10=1000 _23
+    s0 s4 XCHG2	//  _11 ton_amount init_state payload _10=1000 sdest _9=1000 _23 ssrc
+    STSLICER	//  _11 ton_amount init_state payload _10=1000 sdest _9=1000 _24
+    ROT	//  _11 ton_amount init_state payload _10=1000 _9=1000 _24 sdest
+    STSLICER	//  _11 ton_amount init_state payload _10=1000 _9=1000 _25
+    s0 s5 XCHG2	//  _11 _9=1000 init_state payload _10=1000 _25 ton_amount
+    STGRAMS	//  _11 _9=1000 init_state payload _10=1000 _26
+    s1 s5 XCHG	//  _10=1000 _9=1000 init_state payload _11 _26
+    STDICT	//  _10=1000 _9=1000 init_state payload _27
+    0 PUSHINT	//  _10=1000 _9=1000 init_state payload _27 _28=0
+    STGRAMS	//  _10=1000 _9=1000 init_state payload _29
+    0 PUSHINT	//  _10=1000 _9=1000 init_state payload _29 _30=0
+    STGRAMS	//  _10=1000 _9=1000 init_state payload _31
+    s1 s4 XCHG	//  payload _9=1000 init_state _10=1000 _31
+    64 STU	//  payload _9=1000 init_state _33
+    s1 s2 XCHG	//  payload init_state _9=1000 _33
+    32 STU	//  payload init_state _35
+    s1 s(-1) PUXC	//  payload init_state init_state _35
+    1 STU	//  payload init_state msg
+    SWAP	//  payload msg init_state
+    1 EQINT	//  payload msg _39
+    IF:<{	//  payload msg
+      generate_init_state CALLDICT	//  payload msg init_state_builder
+      OVER	//  payload msg init_state_builder msg
+      BBITS	//  payload msg init_state_builder _42
+      OVER	//  payload msg init_state_builder _42 init_state_builder
+      BBITS	//  payload msg init_state_builder _42 _43
+      ADD	//  payload msg init_state_builder _44
+      10 PUSHPOW2DEC	//  payload msg init_state_builder _44 _45=1023
+      GEQ	//  payload msg init_state_builder _46
+      IF:<{	//  payload msg init_state_builder
+        ENDC	//  payload msg _47
+        1 PUSHINT
+        ROT	//  payload _47 _48=1 msg
+        1 STU	//  payload _47 _50
+        STREF	//  payload msg
+      }>ELSE<{	//  payload msg init_state_builder
+        0 PUSHINT
+        ROT	//  payload init_state_builder _52=0 msg
+        1 STU	//  payload init_state_builder _54
+        SWAP	//  payload _54 init_state_builder
+        STBR	//  payload msg
+      }>
+    }>	//  payload msg
+    DUP	//  payload msg msg
+    BBITS	//  payload msg _56
+    s2 PUSH	//  payload msg _56 payload
+    BBITS	//  payload msg _56 _57
+    ADD	//  payload msg _58
+    10 PUSHPOW2DEC	//  payload msg _58 _59=1023
+    GEQ	//  payload msg _60
+    IF:<{	//  payload msg
+      SWAP	//  msg payload
+      ENDC	//  msg _61
+      1 PUSHINT
+      ROT	//  _61 _62=1 msg
+      1 STU	//  _61 _64
+      STREF	//  msg
+    }>ELSE<{	//  payload msg
+      0 PUSHINT	//  payload msg _66=0
+      SWAP	//  payload _66=0 msg
+      1 STU	//  payload _68
+      SWAP	//  _68 payload
+      STBR	//  msg
+    }>
+    ENDC	//  _70
+  }>
+  generate_internal_message_relaxed PROC:<{
+    //  bounce ton_amount init_state payload typeOfAnyAddress
+    generate_any_address CALLDICT	//  bounce ton_amount init_state payload ssrc
+    generate_internal_address CALLDICT	//  bounce ton_amount init_state payload ssrc sdest
+    1000 PUSHINT	//  bounce ton_amount init_state payload ssrc sdest _10=1000
+    DUP	//  bounce ton_amount init_state payload ssrc sdest _10=1000 _11=1000
+    PUSHNULL	//  bounce ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _12
+    0 PUSHINT	//  bounce ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _12 _13=0
+    s0 s0 PUSH2	//  bounce ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _12 _13=0 _14=0 _15=0
+    NEWC	//  bounce ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _12 _13=0 _14=0 _15=0 _16
+    1 STU	//  bounce ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _12 _13=0 _14=0 _18
+    1 STU	//  bounce ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _12 _13=0 _20
+    s1 s10 XCHG	//  _13=0 ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _12 bounce _20
+    1 STU	//  _13=0 ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _12 _22
+    s1 s9 XCHG	//  _12 ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _13=0 _22
+    1 STU	//  _12 ton_amount init_state payload ssrc sdest _10=1000 _11=1000 _24
+    s0 s4 XCHG2	//  _12 ton_amount init_state payload _11=1000 sdest _10=1000 _24 ssrc
+    STSLICER	//  _12 ton_amount init_state payload _11=1000 sdest _10=1000 _25
+    ROT	//  _12 ton_amount init_state payload _11=1000 _10=1000 _25 sdest
+    STSLICER	//  _12 ton_amount init_state payload _11=1000 _10=1000 _26
+    s0 s5 XCHG2	//  _12 _10=1000 init_state payload _11=1000 _26 ton_amount
+    STGRAMS	//  _12 _10=1000 init_state payload _11=1000 _27
+    s1 s5 XCHG	//  _11=1000 _10=1000 init_state payload _12 _27
+    STDICT	//  _11=1000 _10=1000 init_state payload _28
+    0 PUSHINT	//  _11=1000 _10=1000 init_state payload _28 _29=0
+    STGRAMS	//  _11=1000 _10=1000 init_state payload _30
+    0 PUSHINT	//  _11=1000 _10=1000 init_state payload _30 _31=0
+    STGRAMS	//  _11=1000 _10=1000 init_state payload _32
+    s1 s4 XCHG	//  payload _10=1000 init_state _11=1000 _32
+    64 STU	//  payload _10=1000 init_state _34
+    s1 s2 XCHG	//  payload init_state _10=1000 _34
+    32 STU	//  payload init_state _36
+    s1 s(-1) PUXC	//  payload init_state init_state _36
+    1 STU	//  payload init_state msg
+    SWAP	//  payload msg init_state
+    1 EQINT	//  payload msg _40
+    IF:<{	//  payload msg
+      generate_init_state CALLDICT	//  payload msg init_state_builder
+      OVER	//  payload msg init_state_builder msg
+      BBITS	//  payload msg init_state_builder _43
+      OVER	//  payload msg init_state_builder _43 init_state_builder
+      BBITS	//  payload msg init_state_builder _43 _44
+      ADD	//  payload msg init_state_builder _45
+      10 PUSHPOW2DEC	//  payload msg init_state_builder _45 _46=1023
+      GEQ	//  payload msg init_state_builder _47
+      IF:<{	//  payload msg init_state_builder
+        ENDC	//  payload msg _48
+        1 PUSHINT
+        ROT	//  payload _48 _49=1 msg
+        1 STU	//  payload _48 _51
+        STREF	//  payload msg
+      }>ELSE<{	//  payload msg init_state_builder
+        0 PUSHINT
+        ROT	//  payload init_state_builder _53=0 msg
+        1 STU	//  payload init_state_builder _55
+        SWAP	//  payload _55 init_state_builder
+        STBR	//  payload msg
+      }>
+    }>	//  payload msg
+    DUP	//  payload msg msg
+    BBITS	//  payload msg _57
+    s2 PUSH	//  payload msg _57 payload
+    BBITS	//  payload msg _57 _58
+    ADD	//  payload msg _59
+    10 PUSHPOW2DEC	//  payload msg _59 _60=1023
+    GEQ	//  payload msg _61
+    IF:<{	//  payload msg
+      SWAP	//  msg payload
+      ENDC	//  msg _62
+      1 PUSHINT
+      ROT	//  _62 _63=1 msg
+      1 STU	//  _62 _65
+      STREF	//  msg
+    }>ELSE<{	//  payload msg
+      0 PUSHINT	//  payload msg _67=0
+      SWAP	//  payload _67=0 msg
+      1 STU	//  payload _69
+      SWAP	//  _69 payload
+      STBR	//  msg
+    }>
+    ENDC	//  _71
+  }>
+  generate_external_in_message PROC:<{
+    //  import_fee init_state payload
+    8 PUSHPOW2	//  import_fee init_state payload _4=256
+    generate_external_address CALLDICT	//  import_fee init_state payload ssrc
+    generate_internal_address CALLDICT	//  import_fee init_state payload ssrc sdest
+    2 PUSHINT	//  import_fee init_state payload ssrc sdest _9=2
+    NEWC	//  import_fee init_state payload ssrc sdest _9=2 _10
+    2 STU	//  import_fee init_state payload ssrc sdest _12
+    ROT	//  import_fee init_state payload sdest _12 ssrc
+    STSLICER	//  import_fee init_state payload sdest _13
+    SWAP	//  import_fee init_state payload _13 sdest
+    STSLICER	//  import_fee init_state payload _14
+    s0 s3 XCHG2	//  payload init_state _14 import_fee
+    STGRAMS	//  payload init_state _15
+    s1 s(-1) PUXC	//  payload init_state init_state _15
+    1 STU	//  payload init_state msg
+    SWAP	//  payload msg init_state
+    1 EQINT	//  payload msg _19
+    IF:<{	//  payload msg
+      generate_init_state CALLDICT	//  payload msg init_state_builder
+      OVER	//  payload msg init_state_builder msg
+      BBITS	//  payload msg init_state_builder _22
+      OVER	//  payload msg init_state_builder _22 init_state_builder
+      BBITS	//  payload msg init_state_builder _22 _23
+      ADD	//  payload msg init_state_builder _24
+      10 PUSHPOW2DEC	//  payload msg init_state_builder _24 _25=1023
+      GEQ	//  payload msg init_state_builder _26
+      IF:<{	//  payload msg init_state_builder
+        ENDC	//  payload msg _27
+        1 PUSHINT
+        ROT	//  payload _27 _28=1 msg
+        1 STU	//  payload _27 _30
+        STREF	//  payload msg
+      }>ELSE<{	//  payload msg init_state_builder
+        0 PUSHINT
+        ROT	//  payload init_state_builder _32=0 msg
+        1 STU	//  payload init_state_builder _34
+        SWAP	//  payload _34 init_state_builder
+        STBR	//  payload msg
+      }>
+    }>	//  payload msg
+    DUP	//  payload msg msg
+    BBITS	//  payload msg _36
+    s2 PUSH	//  payload msg _36 payload
+    BBITS	//  payload msg _36 _37
+    ADD	//  payload msg _38
+    10 PUSHPOW2DEC	//  payload msg _38 _39=1023
+    GREATER	//  payload msg _40
+    IF:<{	//  payload msg
+      SWAP	//  msg payload
+      ENDC	//  msg _41
+      1 PUSHINT
+      ROT	//  _41 _42=1 msg
+      1 STU	//  _41 _44
+      STREF	//  msg
+    }>ELSE<{	//  payload msg
+      0 PUSHINT	//  payload msg _46=0
+      SWAP	//  payload _46=0 msg
+      1 STU	//  payload _48
+      SWAP	//  _48 payload
+      STBR	//  msg
+    }>
+    ENDC	//  _50
+  }>
+  generate_external_in_message_with_empty_source_address PROC:<{
+    //  import_fee init_state payload
+    generate_empty_address CALLDICT	//  import_fee init_state payload ssrc
+    generate_internal_address CALLDICT	//  import_fee init_state payload ssrc sdest
+    2 PUSHINT	//  import_fee init_state payload ssrc sdest _8=2
+    NEWC	//  import_fee init_state payload ssrc sdest _8=2 _9
+    2 STU	//  import_fee init_state payload ssrc sdest _11
+    ROT	//  import_fee init_state payload sdest _11 ssrc
+    STSLICER	//  import_fee init_state payload sdest _12
+    SWAP	//  import_fee init_state payload _12 sdest
+    STSLICER	//  import_fee init_state payload _13
+    s0 s3 XCHG2	//  payload init_state _13 import_fee
+    STGRAMS	//  payload init_state _14
+    s1 s(-1) PUXC	//  payload init_state init_state _14
+    1 STU	//  payload init_state msg
+    SWAP	//  payload msg init_state
+    1 EQINT	//  payload msg _18
+    IF:<{	//  payload msg
+      generate_init_state CALLDICT	//  payload msg init_state_builder
+      OVER	//  payload msg init_state_builder msg
+      BBITS	//  payload msg init_state_builder _21
+      OVER	//  payload msg init_state_builder _21 init_state_builder
+      BBITS	//  payload msg init_state_builder _21 _22
+      ADD	//  payload msg init_state_builder _23
+      10 PUSHPOW2DEC	//  payload msg init_state_builder _23 _24=1023
+      GEQ	//  payload msg init_state_builder _25
+      IF:<{	//  payload msg init_state_builder
+        ENDC	//  payload msg _26
+        1 PUSHINT
+        ROT	//  payload _26 _27=1 msg
+        1 STU	//  payload _26 _29
+        STREF	//  payload msg
+      }>ELSE<{	//  payload msg init_state_builder
+        0 PUSHINT
+        ROT	//  payload init_state_builder _31=0 msg
+        1 STU	//  payload init_state_builder _33
+        SWAP	//  payload _33 init_state_builder
+        STBR	//  payload msg
+      }>
+    }>	//  payload msg
+    DUP	//  payload msg msg
+    BBITS	//  payload msg _35
+    s2 PUSH	//  payload msg _35 payload
+    BBITS	//  payload msg _35 _36
+    ADD	//  payload msg _37
+    10 PUSHPOW2DEC	//  payload msg _37 _38=1023
+    GEQ	//  payload msg _39
+    IF:<{	//  payload msg
+      SWAP	//  msg payload
+      ENDC	//  msg _40
+      1 PUSHINT
+      ROT	//  _40 _41=1 msg
+      1 STU	//  _40 _43
+      STREF	//  msg
+    }>ELSE<{	//  payload msg
+      0 PUSHINT	//  payload msg _45=0
+      SWAP	//  payload _45=0 msg
+      1 STU	//  payload _47
+      SWAP	//  _47 payload
+      STBR	//  msg
+    }>
+    ENDC	//  _49
+  }>
+  generate_external_out_message PROC:<{
+    //  import_fee init_state payload
+    s2 POP	//  payload init_state
+    generate_internal_address CALLDICT	//  payload init_state ssrc
+    8 PUSHPOW2	//  payload init_state ssrc _6=256
+    generate_external_address CALLDICT	//  payload init_state ssrc sdest
+    1000 PUSHINT	//  payload init_state ssrc sdest _9=1000
+    DUP	//  payload init_state ssrc sdest _9=1000 _10=1000
+    3 PUSHINT	//  payload init_state ssrc sdest _9=1000 _10=1000 _11=3
+    NEWC	//  payload init_state ssrc sdest _9=1000 _10=1000 _11=3 _12
+    2 STU	//  payload init_state ssrc sdest _9=1000 _10=1000 _14
+    s0 s4 XCHG2	//  payload init_state _10=1000 sdest _9=1000 _14 ssrc
+    STSLICER	//  payload init_state _10=1000 sdest _9=1000 _15
+    ROT	//  payload init_state _10=1000 _9=1000 _15 sdest
+    STSLICER	//  payload init_state _10=1000 _9=1000 _16
+    s1 s2 XCHG	//  payload init_state _9=1000 _10=1000 _16
+    64 STU	//  payload init_state _9=1000 _18
+    32 STU	//  payload init_state _20
+    s1 s(-1) PUXC	//  payload init_state init_state _20
+    1 STU	//  payload init_state msg
+    SWAP	//  payload msg init_state
+    1 EQINT	//  payload msg _24
+    IF:<{	//  payload msg
+      generate_init_state CALLDICT	//  payload msg init_state_builder
+      OVER	//  payload msg init_state_builder msg
+      BBITS	//  payload msg init_state_builder _27
+      OVER	//  payload msg init_state_builder _27 init_state_builder
+      BBITS	//  payload msg init_state_builder _27 _28
+      ADD	//  payload msg init_state_builder _29
+      10 PUSHPOW2DEC	//  payload msg init_state_builder _29 _30=1023
+      GEQ	//  payload msg init_state_builder _31
+      IF:<{	//  payload msg init_state_builder
+        ENDC	//  payload msg _32
+        1 PUSHINT
+        ROT	//  payload _32 _33=1 msg
+        1 STU	//  payload _32 _35
+        STREF	//  payload msg
+      }>ELSE<{	//  payload msg init_state_builder
+        0 PUSHINT
+        ROT	//  payload init_state_builder _37=0 msg
+        1 STU	//  payload init_state_builder _39
+        SWAP	//  payload _39 init_state_builder
+        STBR	//  payload msg
+      }>
+    }>	//  payload msg
+    DUP	//  payload msg msg
+    BBITS	//  payload msg _41
+    s2 PUSH	//  payload msg _41 payload
+    BBITS	//  payload msg _41 _42
+    ADD	//  payload msg _43
+    10 PUSHPOW2DEC	//  payload msg _43 _44=1023
+    GEQ	//  payload msg _45
+    IF:<{	//  payload msg
+      SWAP	//  msg payload
+      ENDC	//  msg _46
+      1 PUSHINT
+      ROT	//  _46 _47=1 msg
+      1 STU	//  _46 _49
+      STREF	//  msg
+    }>ELSE<{	//  payload msg
+      0 PUSHINT	//  payload msg _51=0
+      SWAP	//  payload _51=0 msg
+      1 STU	//  payload _53
+      SWAP	//  _53 payload
+      STBR	//  msg
+    }>
+    ENDC	//  _55
+  }>
+  generate_external_out_message_with_empty_destination_address PROC:<{
+    //  import_fee init_state payload
+    s2 POP	//  payload init_state
+    generate_internal_address CALLDICT	//  payload init_state ssrc
+    generate_empty_address CALLDICT	//  payload init_state ssrc sdest
+    1000 PUSHINT	//  payload init_state ssrc sdest _8=1000
+    DUP	//  payload init_state ssrc sdest _8=1000 _9=1000
+    3 PUSHINT	//  payload init_state ssrc sdest _8=1000 _9=1000 _10=3
+    NEWC	//  payload init_state ssrc sdest _8=1000 _9=1000 _10=3 _11
+    2 STU	//  payload init_state ssrc sdest _8=1000 _9=1000 _13
+    s0 s4 XCHG2	//  payload init_state _9=1000 sdest _8=1000 _13 ssrc
+    STSLICER	//  payload init_state _9=1000 sdest _8=1000 _14
+    ROT	//  payload init_state _9=1000 _8=1000 _14 sdest
+    STSLICER	//  payload init_state _9=1000 _8=1000 _15
+    s1 s2 XCHG	//  payload init_state _8=1000 _9=1000 _15
+    64 STU	//  payload init_state _8=1000 _17
+    32 STU	//  payload init_state _19
+    s1 s(-1) PUXC	//  payload init_state init_state _19
+    1 STU	//  payload init_state msg
+    SWAP	//  payload msg init_state
+    1 EQINT	//  payload msg _23
+    IF:<{	//  payload msg
+      generate_init_state CALLDICT	//  payload msg init_state_builder
+      OVER	//  payload msg init_state_builder msg
+      BBITS	//  payload msg init_state_builder _26
+      OVER	//  payload msg init_state_builder _26 init_state_builder
+      BBITS	//  payload msg init_state_builder _26 _27
+      ADD	//  payload msg init_state_builder _28
+      10 PUSHPOW2DEC	//  payload msg init_state_builder _28 _29=1023
+      GEQ	//  payload msg init_state_builder _30
+      IF:<{	//  payload msg init_state_builder
+        ENDC	//  payload msg _31
+        1 PUSHINT
+        ROT	//  payload _31 _32=1 msg
+        1 STU	//  payload _31 _34
+        STREF	//  payload msg
+      }>ELSE<{	//  payload msg init_state_builder
+        0 PUSHINT
+        ROT	//  payload init_state_builder _36=0 msg
+        1 STU	//  payload init_state_builder _38
+        SWAP	//  payload _38 init_state_builder
+        STBR	//  payload msg
+      }>
+    }>	//  payload msg
+    DUP	//  payload msg msg
+    BBITS	//  payload msg _40
+    s2 PUSH	//  payload msg _40 payload
+    BBITS	//  payload msg _40 _41
+    ADD	//  payload msg _42
+    10 PUSHPOW2DEC	//  payload msg _42 _43=1023
+    GEQ	//  payload msg _44
+    IF:<{	//  payload msg
+      SWAP	//  msg payload
+      ENDC	//  msg _45
+      1 PUSHINT
+      ROT	//  _45 _46=1 msg
+      1 STU	//  _45 _48
+      STREF	//  msg
+    }>ELSE<{	//  payload msg
+      0 PUSHINT	//  payload msg _50=0
+      SWAP	//  payload _50=0 msg
+      1 STU	//  payload _52
+      SWAP	//  _52 payload
+      STBR	//  msg
+    }>
+    ENDC	//  _54
+  }>
+  generate_external_out_message_relaxed PROC:<{
+    //  ton_amount init_state payload typeOfAnyAddress
+    s3 POP	//  typeOfAnyAddress init_state payload
+    s0 s2 XCHG	//  payload init_state typeOfAnyAddress
+    generate_any_address CALLDICT	//  payload init_state ssrc
+    8 PUSHPOW2	//  payload init_state ssrc _7=256
+    generate_external_address CALLDICT	//  payload init_state ssrc sdest
+    1000 PUSHINT	//  payload init_state ssrc sdest _10=1000
+    DUP	//  payload init_state ssrc sdest _10=1000 _11=1000
+    3 PUSHINT	//  payload init_state ssrc sdest _10=1000 _11=1000 _12=3
+    NEWC	//  payload init_state ssrc sdest _10=1000 _11=1000 _12=3 _13
+    2 STU	//  payload init_state ssrc sdest _10=1000 _11=1000 _15
+    s0 s4 XCHG2	//  payload init_state _11=1000 sdest _10=1000 _15 ssrc
+    STSLICER	//  payload init_state _11=1000 sdest _10=1000 _16
+    ROT	//  payload init_state _11=1000 _10=1000 _16 sdest
+    STSLICER	//  payload init_state _11=1000 _10=1000 _17
+    s1 s2 XCHG	//  payload init_state _10=1000 _11=1000 _17
+    64 STU	//  payload init_state _10=1000 _19
+    32 STU	//  payload init_state _21
+    s1 s(-1) PUXC	//  payload init_state init_state _21
+    1 STU	//  payload init_state msg
+    SWAP	//  payload msg init_state
+    1 EQINT	//  payload msg _25
+    IF:<{	//  payload msg
+      generate_init_state CALLDICT	//  payload msg init_state_builder
+      OVER	//  payload msg init_state_builder msg
+      BBITS	//  payload msg init_state_builder _28
+      OVER	//  payload msg init_state_builder _28 init_state_builder
+      BBITS	//  payload msg init_state_builder _28 _29
+      ADD	//  payload msg init_state_builder _30
+      10 PUSHPOW2DEC	//  payload msg init_state_builder _30 _31=1023
+      GEQ	//  payload msg init_state_builder _32
+      IF:<{	//  payload msg init_state_builder
+        ENDC	//  payload msg _33
+        1 PUSHINT
+        ROT	//  payload _33 _34=1 msg
+        1 STU	//  payload _33 _36
+        STREF	//  payload msg
+      }>ELSE<{	//  payload msg init_state_builder
+        0 PUSHINT
+        ROT	//  payload init_state_builder _38=0 msg
+        1 STU	//  payload init_state_builder _40
+        SWAP	//  payload _40 init_state_builder
+        STBR	//  payload msg
+      }>
+    }>	//  payload msg
+    DUP	//  payload msg msg
+    BBITS	//  payload msg _42
+    s2 PUSH	//  payload msg _42 payload
+    BBITS	//  payload msg _42 _43
+    ADD	//  payload msg _44
+    10 PUSHPOW2DEC	//  payload msg _44 _45=1023
+    GEQ	//  payload msg _46
+    IF:<{	//  payload msg
+      SWAP	//  msg payload
+      ENDC	//  msg _47
+      1 PUSHINT
+      ROT	//  _47 _48=1 msg
+      1 STU	//  _47 _50
+      STREF	//  msg
+    }>ELSE<{	//  payload msg
+      0 PUSHINT	//  payload msg _52=0
+      SWAP	//  payload _52=0 msg
+      1 STU	//  payload _54
+      SWAP	//  _54 payload
+      STBR	//  msg
+    }>
+    ENDC	//  _56
+  }>
+  parse_internal_message PROC:<{
+    //  message
+    CTOS	//  cs
+    112 PUSHINT	//  cs _3
+    SWAP	//  _3 cs
+    1 LDU	//  _3 _4 cs
+    SWAP	//  _3 cs _4
+    0 NEQINT	//  _3 cs _8
+    s1 s2 XCHG	//  cs _3 _8
+    THROWANYIF
+    1 LDU	//  ihr_disabled cs
+    1 LDU	//  ihr_disabled bounce cs
+    1 LDU	//  ihr_disabled bounce bounced cs
+    LDMSGADDR	//  ihr_disabled bounce bounced src cs
+    LDMSGADDR	//  ihr_disabled bounce bounced src to_address cs
+    LDVARUINT16	//  ihr_disabled bounce bounced src to_address money cs
+    LDDICT	//  ihr_disabled bounce bounced src to_address money _79 _78
+    NIP	//  ihr_disabled bounce bounced src to_address money cs
+    LDGRAMS	//  ihr_disabled bounce bounced src to_address money _81 _80
+    NIP	//  ihr_disabled bounce bounced src to_address money cs
+    LDGRAMS	//  ihr_disabled bounce bounced src to_address money _83 _82
+    NIP	//  ihr_disabled bounce bounced src to_address money cs
+    96 LDU	//  ihr_disabled bounce bounced src to_address money timestamps cs
+    1 LDU	//  ihr_disabled bounce bounced src to_address money timestamps maybe_init_state cs
+    NIL	//  ihr_disabled bounce bounced src to_address money timestamps maybe_init_state cs init_state
+    s0 s2 XCHG	//  ihr_disabled bounce bounced src to_address money timestamps init_state cs maybe_init_state
+    1 EQINT	//  ihr_disabled bounce bounced src to_address money timestamps init_state cs _50
+    IF:<{	//  ihr_disabled bounce bounced src to_address money timestamps init_state cs
+      NIP	//  ihr_disabled bounce bounced src to_address money timestamps cs
+      DUP	//  ihr_disabled bounce bounced src to_address money timestamps cs cs
+      parse_init_state CALLDICT	//  ihr_disabled bounce bounced src to_address money timestamps cs init_state
+      SWAP	//  ihr_disabled bounce bounced src to_address money timestamps init_state cs
+    }>	//  ihr_disabled bounce bounced src to_address money timestamps init_state cs
+    1 LDU	//  ihr_disabled bounce bounced src to_address money timestamps init_state body_flag cs
+    SWAP	//  ihr_disabled bounce bounced src to_address money timestamps init_state cs body_flag
+    0 EQINT	//  ihr_disabled bounce bounced src to_address money timestamps init_state cs _59
+    IF:<{	//  ihr_disabled bounce bounced src to_address money timestamps init_state body
+    }>ELSE<{	//  ihr_disabled bounce bounced src to_address money timestamps init_state cs
+      LDREF	//  ihr_disabled bounce bounced src to_address money timestamps init_state _91 _90
+      DROP	//  ihr_disabled bounce bounced src to_address money timestamps init_state _60
+      CTOS	//  ihr_disabled bounce bounced src to_address money timestamps init_state body
+    }>
+    9 TUPLE	//  _63
+  }>
+  parse_external_message PROC:<{
+    //  message
+    CTOS	//  cs
+    2 LDU	//  msg_info cs
+    113 PUSHINT	//  msg_info cs _7
+    s2 PUSH	//  msg_info cs _7 msg_info
+    2 NEQINT	//  msg_info cs _7 _9
+    s3 PUSH	//  msg_info cs _7 _9 msg_info
+    3 NEQINT	//  msg_info cs _7 _9 _11
+    AND	//  msg_info cs _7 _12
+    THROWANYIF
+    LDMSGADDR	//  msg_info src cs
+    LDMSGADDR	//  msg_info src to_address cs
+    0 PUSHINT	//  msg_info src to_address cs import_fee=0
+    s0 s4 PUXC	//  timestamps=0 src to_address cs import_fee=0 msg_info
+    2 EQINT	//  timestamps=0 src to_address cs import_fee=0 _25
+    IF:<{	//  timestamps=0 src to_address cs import_fee=0
+      DROP	//  timestamps=0 src to_address cs
+      LDGRAMS	//  timestamps=0 src to_address import_fee cs
+    }>ELSE<{	//  timestamps=0 src to_address cs import_fee=0
+      s4 POP	//  import_fee=0 src to_address cs
+      96 LDU	//  import_fee=0 src to_address timestamps cs
+      s1 s4 XCHG	//  timestamps src to_address import_fee cs
+    }>
+    1 LDU	//  timestamps src to_address import_fee maybe_init_state cs
+    NIL	//  timestamps src to_address import_fee maybe_init_state cs init_state
+    s0 s2 XCHG	//  timestamps src to_address import_fee init_state cs maybe_init_state
+    1 EQINT	//  timestamps src to_address import_fee init_state cs _38
+    IF:<{	//  timestamps src to_address import_fee init_state cs
+      NIP	//  timestamps src to_address import_fee cs
+      DUP	//  timestamps src to_address import_fee cs cs
+      parse_init_state CALLDICT	//  timestamps src to_address import_fee cs init_state
+      SWAP	//  timestamps src to_address import_fee init_state cs
+    }>	//  timestamps src to_address import_fee init_state cs
+    1 LDU	//  timestamps src to_address import_fee init_state body_flag cs
+    SWAP	//  timestamps src to_address import_fee init_state cs body_flag
+    0 EQINT	//  timestamps src to_address import_fee init_state cs _47
+    IF:<{	//  timestamps src to_address import_fee init_state body
+    }>ELSE<{	//  timestamps src to_address import_fee init_state cs
+      LDREF	//  timestamps src to_address import_fee init_state _67 _66
+      DROP	//  timestamps src to_address import_fee init_state _48
+      CTOS	//  timestamps src to_address import_fee init_state body
+    }>
+    s4 s5 XCHG
+    s3 s4 XCHG
+    s2 s3 XCHG	//  src to_address import_fee timestamps init_state body
+    6 TUPLE	//  _51
+  }>
+  parse_send_raw_message PROCINLINE:<{
+    //  out_action
+    8 LDU	//  _1 out_action
+    LDREF	//  _1 _9 _8
+    DROP	//  _1 _4
+  }>
+  parse_lib_code PROCINLINE:<{
+    //  out_action
+    7 LDU	//  mode out_action
+    DUP	//  mode out_action out_action
+    SREFS	//  mode out_action _5
+    0 GTINT	//  mode out_action _7
+    IF:<{	//  mode out_action
+      LDREF	//  mode _20 _19
+      DROP	//  mode _8
+    }>ELSE<{	//  mode out_action
+      256 LDSLICE	//  mode _22 _21
+      DROP	//  mode loaded_bits
+      NEWC	//  mode loaded_bits _14
+      SWAP	//  mode _14 loaded_bits
+      STSLICER	//  mode _15
+      ENDC	//  mode _16
+    }>
+  }>
+  parse_raw_reserve PROCINLINE:<{
+    //  out_action
+    8 LDU	//  _1 out_action
+    LDDICT	//  _1 _9 _8
+    DROP	//  _1 _4
+  }>
+  parse_set_code PROCINLINE:<{
+    //  out_action
+    LDREF	//  _4 _3
+    DROP	//  _1
+  }>
+  parse_c5 PROCINLINE:<{
+    // 
+    NIL	//  list_of_actions_tuple
+    c5 PUSH	//  list_of_actions_tuple c5
+    NIL	//  list_of_actions_tuple c5 actions
+    SWAP	//  list_of_actions_tuple actions c5
+    CTOS	//  list_of_actions_tuple actions out_action_node
+    DUP	//  list_of_actions_tuple actions out_action_node out_action_node
+    SBITS	//  list_of_actions_tuple actions out_action_node _8
+    0 EQINT	//  list_of_actions_tuple actions out_action_node _10
+    IF:<{	//  list_of_actions_tuple actions out_action_node
+      3 BLKDROP	// 
+      PUSHNULL	//  _11
+    }>ELSE<{	//  list_of_actions_tuple actions out_action_node
+      0 PUSHINT	//  list_of_actions_tuple actions out_action_node num=0
+      UNTIL:<{
+        SWAP	//  list_of_actions_tuple actions num out_action_node
+        LDREF	//  list_of_actions_tuple actions num next out_action_node
+        s0 s3 XCHG2	//  list_of_actions_tuple next num out_action_node actions
+        CONS	//  list_of_actions_tuple next num actions
+        s0 s2 XCHG	//  list_of_actions_tuple actions num next
+        CTOS	//  list_of_actions_tuple actions num out_action_node
+        SWAP	//  list_of_actions_tuple actions out_action_node num
+        INC	//  list_of_actions_tuple actions out_action_node num
+        OVER	//  list_of_actions_tuple actions out_action_node num out_action_node
+        SBITS	//  list_of_actions_tuple actions out_action_node num _23
+        0 EQINT	//  list_of_actions_tuple actions out_action_node num break
+      }>	//  list_of_actions_tuple actions out_action_node num
+      NIP	//  list_of_actions_tuple actions num
+      0 PUSHINT	//  list_of_actions_tuple actions num i=0
+      UNTIL:<{
+        s0 s2 XCHG	//  list_of_actions_tuple i num actions
+        UNCONS	//  list_of_actions_tuple i num out_action actions
+        SWAP	//  list_of_actions_tuple i num actions out_action
+        32 LDU	//  list_of_actions_tuple i num actions action_code out_action
+        OVER
+        247711853 PUSHINT	//  list_of_actions_tuple i num actions action_code out_action action_code _35=247711853
+        EQUAL	//  list_of_actions_tuple i num actions action_code out_action _36
+        IF:<{	//  list_of_actions_tuple i num actions action_code out_action
+          NIP	//  list_of_actions_tuple i num actions out_action
+          parse_send_raw_message INLINECALLDICT	//  list_of_actions_tuple i num actions mode body
+          0 PUSHINT	//  list_of_actions_tuple i num actions mode body _42=0
+          s0 s2 XCHG	//  list_of_actions_tuple i num actions _42=0 body mode
+          TRIPLE	//  list_of_actions_tuple i num actions _41
+          s1 s4 XCHG	//  actions i num list_of_actions_tuple _41
+          TPUSH	//  actions i num list_of_actions_tuple
+        }>ELSE<{	//  list_of_actions_tuple i num actions action_code out_action
+          OVER
+          2907562126 PUSHINT	//  list_of_actions_tuple i num actions action_code out_action action_code _44=2907562126
+          EQUAL	//  list_of_actions_tuple i num actions action_code out_action _45
+          IF:<{	//  list_of_actions_tuple i num actions action_code out_action
+            NIP	//  list_of_actions_tuple i num actions out_action
+            parse_set_code INLINECALLDICT	//  list_of_actions_tuple i num actions new_setcode
+            1 PUSHINT	//  list_of_actions_tuple i num actions new_setcode _50=1
+            SWAP
+            -1 PUSHINT	//  list_of_actions_tuple i num actions _50=1 new_setcode _51=-1
+            TRIPLE	//  list_of_actions_tuple i num actions _49
+            s1 s4 XCHG	//  actions i num list_of_actions_tuple _49
+            TPUSH	//  actions i num list_of_actions_tuple
+          }>ELSE<{	//  list_of_actions_tuple i num actions action_code out_action
+            OVER
+            921090057 PUSHINT	//  list_of_actions_tuple i num actions action_code out_action action_code _53=921090057
+            EQUAL	//  list_of_actions_tuple i num actions action_code out_action _54
+            IF:<{	//  list_of_actions_tuple i num actions action_code out_action
+              NIP	//  list_of_actions_tuple i num actions out_action
+              parse_raw_reserve INLINECALLDICT	//  list_of_actions_tuple i num actions mode currencies
+              2 PUSHINT	//  list_of_actions_tuple i num actions mode currencies _60=2
+              s0 s2 XCHG	//  list_of_actions_tuple i num actions _60=2 currencies mode
+              TRIPLE	//  list_of_actions_tuple i num actions _59
+              s1 s4 XCHG	//  actions i num list_of_actions_tuple _59
+              TPUSH	//  actions i num list_of_actions_tuple
+            }>ELSE<{	//  list_of_actions_tuple i num actions action_code out_action
+              SWAP
+              653925844 PUSHINT	//  list_of_actions_tuple i num actions out_action action_code _62=653925844
+              EQUAL	//  list_of_actions_tuple i num actions out_action _63
+              IF:<{	//  list_of_actions_tuple i num actions out_action
+                parse_lib_code INLINECALLDICT	//  list_of_actions_tuple i num actions mode lib_cell_or_lib_hash
+                3 PUSHINT	//  list_of_actions_tuple i num actions mode lib_cell_or_lib_hash _69=3
+                s0 s2 XCHG	//  list_of_actions_tuple i num actions _69=3 lib_cell_or_lib_hash mode
+                TRIPLE	//  list_of_actions_tuple i num actions _68
+                s1 s4 XCHG	//  actions i num list_of_actions_tuple _68
+                TPUSH	//  actions i num list_of_actions_tuple
+                s0 s3 XCHG	//  list_of_actions_tuple i num actions
+              }>ELSE<{
+                DROP	//  list_of_actions_tuple i num actions
+              }>
+              s0 s3 XCHG	//  actions i num list_of_actions_tuple
+            }>
+          }>
+        }>
+        s0 s2 XCHG	//  actions list_of_actions_tuple num i
+        INC	//  actions list_of_actions_tuple num i
+        s0 s1 PUSH2	//  actions list_of_actions_tuple num i i num
+        GEQ	//  actions list_of_actions_tuple num i _73
+        s3 s4 XCHG	//  list_of_actions_tuple actions num i _73
+      }>	//  list_of_actions_tuple actions num i
+      3 BLKDROP	//  list_of_actions_tuple
+    }>
+  }>
+  storage::load_data PROCINLINE:<{
+    // 
+    c4 PUSH	//  _1
+    CTOS	//  ds
+    LDMSGADDR	//  _3 ds
+    LDMSGADDR	//  _3 _5 ds
+    LDMSGADDR	//  _3 _5 _7 ds
+    LDMSGADDR	//  _3 _5 _7 _9 ds
+    LDDICT	//  _3 _5 _7 _9 _11 ds
+    LDDICT	//  _3 _5 _7 _9 _11 _26 _25
+    DROP	//  _3 _5 _7 _9 _11 _13
+  }>
+  storage::save_data PROCINLINE:<{
+    //  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow loan
+    NEWC	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow loan _6
+    s0 s6 XCHG2	//  loan jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _6 owner_address
+    STSLICER	//  loan jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _7
+    s0 s4 XCHG2	//  loan borrow minter_otoken_address jetton_wallet_otoken_address _7 jetton_wallet_x_address
+    STSLICER	//  loan borrow minter_otoken_address jetton_wallet_otoken_address _8
+    ROT	//  loan borrow jetton_wallet_otoken_address _8 minter_otoken_address
+    STSLICER	//  loan borrow jetton_wallet_otoken_address _9
+    SWAP	//  loan borrow _9 jetton_wallet_otoken_address
+    STSLICER	//  loan borrow _10
+    STDICT	//  loan _11
+    STDICT	//  _12
+    ENDC	//  _13
+    c4 POP
+  }>
+  utils::get_null_slice PROC:<{
+    // 
+    NEWC	//  _0
+    ENDC	//  _1
+    CTOS	//  _2
+  }>
+  utils::get_null_cell PROC:<{
+    // 
+    NEWC	//  _0
+    ENDC	//  _1
+  }>
+  utils::parse_sender_address PROC:<{
+    //  in_msg_full
+    CTOS	//  cs
+    4 LDU	//  _11 _10
+    NIP	//  cs
+    LDMSGADDR	//  _13 _12
+    DROP	//  sender_address
+  }>
+  get_lend_info PROC:<{
+    //  msg
+    storage::load_data INLINECALLDICT	//  msg _25 _26 _27 _28 _29 _30
+    5 1 BLKDROP2	//  msg lend
+    SWAP	//  lend msg
+    LDMSGADDR	//  lend _32 _31
+    DROP	//  lend address
+    REWRITESTDADDR	//  lend _33 _34
+    NIP	//  lend key_addr
+    SWAP
+    8 PUSHPOW2	//  key_addr lend _15=256
+    DICTUGETOPTREF	//  _16
+    CTOS	//  lendSlice
+    LDMSGADDR	//  _18 lendSlice
+    64 LDU	//  _18 _20 lendSlice
+    LDGRAMS	//  _18 _20 _40 _39
+    DROP	//  _18 _20 _23
+  }>
+  get_borrow_info PROC:<{
+    //  msg
+    storage::load_data INLINECALLDICT	//  msg _25 _26 _27 _28 _29 _30
+    s1 s5 XCHG
+    5 BLKDROP	//  msg borrow
+    SWAP	//  borrow msg
+    LDMSGADDR	//  borrow _32 _31
+    DROP	//  borrow address
+    REWRITESTDADDR	//  borrow _33 _34
+    NIP	//  borrow key_addr
+    SWAP
+    8 PUSHPOW2	//  key_addr borrow _15=256
+    DICTUGETOPTREF	//  _16
+    CTOS	//  borrowSlice
+    LDMSGADDR	//  _18 borrowSlice
+    64 LDU	//  _18 _20 borrowSlice
+    LDGRAMS	//  _18 _20 _40 _39
+    DROP	//  _18 _20 _23
+  }>
+  get_owner_address PROC:<{
+    // 
+    storage::load_data INLINECALLDICT	//  _7 _8 _9 _10 _11 _12
+    5 BLKDROP	//  owner_address
+  }>
+  get_otoken_jetton_address PROC:<{
+    // 
+    storage::load_data INLINECALLDICT	//  _7 _8 _9 _10 _11 _12
+    s2 s5 XCHG
+    5 BLKDROP	//  jetton_wallet_otoken_address
+  }>
+  get_otoken_minter_address PROC:<{
+    // 
+    storage::load_data INLINECALLDICT	//  _7 _8 _9 _10 _11 _12
+    s3 s5 XCHG
+    5 BLKDROP	//  minter_otoken_address
+  }>
+  get_otoken_x_jetton_address PROC:<{
+    // 
+    storage::load_data INLINECALLDICT	//  _7 _8 _9 _10 _11 _12
+    s4 s5 XCHG
+    5 BLKDROP	//  jetton_wallet_x_address
+  }>
+  admin::change_admin PROC:<{
+    //  msg sender_address
+    storage::load_data INLINECALLDICT	//  msg sender_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    7000 PUSHINT	//  msg sender_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend _9
+    s6 s7 XCHG2	//  msg _9 lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow owner_address sender_address
+    SDEQ	//  msg _9 lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _10
+    s1 s6 XCHG	//  msg borrow lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _9 _10
+    THROWANYIFNOT
+    s0 s5 XCHG	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address msg
+    LDMSGADDR	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address _23 _22
+    DROP	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address new_addr
+    s5 s1 s5 XCHG3
+    s4 s4 XCHG2
+    s0 s3 XCHG	//  new_addr jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    storage::save_data INLINECALLDICT
+  }>
+  admin::change_wallet_x PROC:<{
+    //  msg sender_address
+    storage::load_data INLINECALLDICT	//  msg sender_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    7000 PUSHINT	//  msg sender_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend _9
+    s6 s7 XCHG2	//  msg _9 lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow owner_address sender_address
+    SDEQ	//  msg _9 lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _10
+    s1 s6 XCHG	//  msg borrow lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _9 _10
+    THROWANYIFNOT
+    s0 s5 XCHG	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address msg
+    LDMSGADDR	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address _23 _22
+    DROP	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address new_addr
+    s5 s1 s5 XCHG3
+    s4 s4 XCHG2
+    s0 s3 XCHG	//  new_addr jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    storage::save_data INLINECALLDICT
+  }>
+  admin::change_minter PROC:<{
+    //  msg sender_address
+    storage::load_data INLINECALLDICT	//  msg sender_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    7000 PUSHINT	//  msg sender_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend _9
+    s6 s7 XCHG2	//  msg _9 lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow owner_address sender_address
+    SDEQ	//  msg _9 lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _10
+    s1 s6 XCHG	//  msg borrow lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _9 _10
+    THROWANYIFNOT
+    s0 s5 XCHG	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address msg
+    LDMSGADDR	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address _23 _22
+    DROP	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address new_addr
+    s5 s1 s5 XCHG3
+    s4 s4 XCHG2
+    s0 s3 XCHG	//  new_addr jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    storage::save_data INLINECALLDICT
+  }>
+  admin::change_wallet_o PROC:<{
+    //  msg sender_address
+    storage::load_data INLINECALLDICT	//  msg sender_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    7000 PUSHINT	//  msg sender_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend _9
+    s6 s7 XCHG2	//  msg _9 lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow owner_address sender_address
+    SDEQ	//  msg _9 lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _10
+    s1 s6 XCHG	//  msg borrow lend jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _9 _10
+    THROWANYIFNOT
+    s0 s5 XCHG	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address msg
+    LDMSGADDR	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address _23 _22
+    DROP	//  jetton_wallet_otoken_address borrow lend jetton_wallet_x_address minter_otoken_address new_addr
+    s5 s1 s5 XCHG3
+    s4 s4 XCHG2
+    s0 s3 XCHG	//  new_addr jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    storage::save_data INLINECALLDICT
+  }>
+  borrow::new_borrow PROC:<{
+    //  in_msg_body sender_address msg_value query_id
+    s3 POP	//  query_id sender_address msg_value
+    storage::load_data INLINECALLDICT	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    s6 PUSH	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend msg_value
+    80 MULCONST	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend _13
+    100 PUSHINT	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend _13 _14=100
+    DIV	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount
+    s8 PUSH	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount sender_address
+    REWRITESTDADDR	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount _79 _80
+    NIP	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount key_addr
+    NOW	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount key_addr _22
+    NEWC	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount key_addr _22 _23
+    s11 PUSH	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount key_addr _22 _23 sender_address
+    STSLICER	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount key_addr _22 _24
+    64 STU	//  query_id sender_address msg_value owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount key_addr _26
+    s0 s9 XCHG2	//  query_id sender_address key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount _26 msg_value
+    STGRAMS	//  query_id sender_address key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount _27
+    ENDC	//  query_id sender_address key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend send_amount borrowCell
+    s0 s8 s3 XCHG3
+    8 PUSHPOW2	//  query_id sender_address send_amount owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address lend borrowCell key_addr borrow _30=256
+    DICTUSETREF	//  query_id sender_address send_amount owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address lend borrow
+    0xf8a7ea5 PUSHINT	//  query_id sender_address send_amount owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address lend borrow _33
+    NEWC	//  query_id sender_address send_amount owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address lend borrow _33 _34
+    32 STU	//  query_id sender_address send_amount owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address lend borrow _36
+    s1 s9 XCHG	//  borrow sender_address send_amount owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address lend query_id _36
+    64 STU	//  borrow sender_address send_amount owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address lend _38
+    s0 s6 XCHG2	//  borrow sender_address lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _38 send_amount
+    STGRAMS	//  borrow sender_address lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _39
+    s6 PUSH	//  borrow sender_address lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _39 sender_address
+    STSLICER	//  borrow sender_address lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _40
+    s0 s6 XCHG2	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address _40 sender_address
+    STSLICER	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address _41
+    ENDC	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body
+    0 PUSHINT	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _44=0
+    24 PUSHINT	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _44=0 _45=24
+    NEWC	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _44=0 _45=24 _46
+    6 STU	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _44=0 _48
+    s4 PUSH	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _44=0 _48 jetton_wallet_x_address
+    STSLICER	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _44=0 _49
+    OVER	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _44=0 _49 _50=0
+    STGRAMS	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _44=0 _51
+    107 STU	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _65
+    s1 s(-1) PUXC	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body body _65
+    STREF	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address body _66
+    SWAP	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address _66 body
+    CTOS	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address _66 _67
+    STSLICER	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address _68
+    ENDC	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address msg
+    64 PUSHINT	//  borrow jetton_wallet_otoken_address lend owner_address jetton_wallet_x_address minter_otoken_address msg _70=64
+    SENDRAWMSG
+    3 3 BLKSWAP
+    s1 s2 XCHG	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    storage::save_data INLINECALLDICT
+  }>
+  borrow::delete_borrow PROC:<{
+    //  in_msg_body
+    storage::load_data INLINECALLDICT	//  in_msg_body owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    s0 s6 XCHG	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow in_msg_body
+    LDGRAMS	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount in_msg_body
+    LDMSGADDR	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount _121 _120
+    DROP	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0
+    DUP	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 sender_address_0
+    REWRITESTDADDR	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 _122 _123
+    NIP	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr
+    s0 s8 PUSH2
+    8 PUSHPOW2	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr key_addr lend _18=256
+    DICTUGETOPTREF	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr _19
+    CTOS	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrowSlice
+    7001 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrowSlice _21
+    SWAP	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr _21 borrowSlice
+    LDMSGADDR	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr _21 _22 borrowSlice
+    s1 s4 XCPU	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr _21 borrowSlice _22 sender_address_0
+    SDEQ	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr _21 borrowSlice _24
+    s1 s2 XCHG	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrowSlice _21 _24
+    THROWANYIFNOT
+    LDMSGADDR	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr sender_address_1 borrowSlice
+    7001 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr sender_address_1 borrowSlice _29
+    s4 s2 PUXC	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr _29 borrowSlice sender_address_0 sender_address_1
+    SDEQ	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr _29 borrowSlice _30
+    s1 s2 XCHG	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrowSlice _29 _30
+    THROWANYIFNOT
+    64 LDU	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time borrowSlice
+    7002 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time borrowSlice _36
+    s2 PUSH	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time borrowSlice _36 time
+    1 LESSINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time borrowSlice _36 _38
+    THROWANYIF
+    LDGRAMS	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time _131 _130
+    DROP	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time borrow_amount
+    7004 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time borrow_amount _43
+    OVER	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time borrow_amount _43 borrow_amount
+    1 LESSINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr time borrow_amount _43 _45
+    THROWANYIF
+    NOW
+    ROT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _48 time
+    SUB	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _49
+    86400 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _49 _50=86400
+    DIV	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time
+    7003 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time _52
+    OVER	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time _52 borrow_time
+    2 LESSINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time _52 _54
+    THROWANYIF
+    OVER	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time borrow_amount
+    18 MULCONST	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time _58
+    100 MULCONST	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time _60
+    100 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time _60 _61=100
+    DIV	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount borrow_time _62
+    SWAP	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _62 borrow_time
+    MUL	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _63
+    365 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _63 _64=365
+    DIV	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _65
+    100 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _65 _66=100
+    DIV	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _67
+    OVER	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount _67 borrow_amount
+    ADD	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount plus_balance
+    7004 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow amount sender_address_0 key_addr borrow_amount plus_balance _69
+    s0 s5 XCHG	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _69 sender_address_0 key_addr borrow_amount plus_balance amount
+    LESS	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _69 sender_address_0 key_addr borrow_amount _70
+    s1 s4 XCHG	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow borrow_amount sender_address_0 key_addr _69 _70
+    THROWANYIF
+    0 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow borrow_amount sender_address_0 key_addr _73=0
+    24 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow borrow_amount sender_address_0 key_addr _73=0 _74=24
+    NEWC	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow borrow_amount sender_address_0 key_addr _73=0 _74=24 _75
+    6 STU	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow borrow_amount sender_address_0 key_addr _73=0 _77
+    s3 PUSH	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow borrow_amount sender_address_0 key_addr _73=0 _77 sender_address_0
+    STSLICER	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow borrow_amount sender_address_0 key_addr _73=0 _78
+    s0 s4 XCHG2	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _73=0 sender_address_0 key_addr _78 borrow_amount
+    STVARUINT16	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _73=0 sender_address_0 key_addr _79
+    s1 s3 XCHG	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr sender_address_0 _73=0 _79
+    107 STU	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr sender_address_0 _93
+    utils::get_null_slice CALLDICT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr sender_address_0 _93 _94
+    STSLICER	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr sender_address_0 _95
+    ENDC	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr sender_address_0 msg
+    64 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr sender_address_0 msg _97=64
+    SENDRAWMSG
+    0 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr sender_address_0 _100=0
+    NEWC
+    ROT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr _100=0 _101 sender_address_0
+    STSLICER	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr _100=0 _102
+    64 STU	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr _104
+    0 PUSHINT	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr _104 _105=0
+    STGRAMS	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr _106
+    ENDC	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow key_addr borrowCell
+    s0 s2 XCHG
+    8 PUSHPOW2	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrowCell key_addr borrow _109=256
+    DICTUSETREF	//  lend owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow
+    5 ROLL	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    storage::save_data INLINECALLDICT
+  }>
+  lend::new_lend PROC:<{
+    //  in_msg_body sender_address msg_value query_id
+    2 1 BLKDROP2	//  in_msg_body query_id
+    storage::load_data INLINECALLDICT	//  in_msg_body query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    s0 s7 XCHG	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow in_msg_body
+    LDGRAMS	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount in_msg_body
+    LDMSGADDR	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount _97 _96
+    DROP	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address
+    0x178d4519 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _18
+    NEWC	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _18 _19
+    32 STU	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _21
+    s8 s(-1) PUXC	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address query_id _21
+    64 STU	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _23
+    s2 PUSH	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _23 input_amount
+    STGRAMS	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _24
+    utils::get_null_slice CALLDICT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _24 _25
+    STSLICER	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _26
+    utils::get_null_slice CALLDICT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _26 _27
+    STSLICER	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _28
+    0 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _28 _29=0
+    STGRAMS	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _30
+    ENDC	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address transferBody
+    21 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address transferBody _33
+    NEWC	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address transferBody _33 _34
+    32 STU	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address transferBody _36
+    s1 s9 XCHG	//  lend transferBody owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address query_id _36
+    64 STU	//  lend transferBody owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _38
+    OVER	//  lend transferBody owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _38 to_address
+    STSLICER	//  lend transferBody owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _39
+    0 PUSHINT	//  lend transferBody owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _39 _40=0
+    STGRAMS	//  lend transferBody owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address _41
+    s1 s8 XCHG	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount transferBody _41
+    STREF	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount _42
+    ENDC	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body
+    0 PUSHINT	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _45=0
+    24 PUSHINT	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _45=0 _46=24
+    NEWC	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _45=0 _46=24 _47
+    6 STU	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _45=0 _49
+    s7 PUSH	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _45=0 _49 jetton_wallet_x_address
+    STSLICER	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _45=0 _50
+    OVER	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _45=0 _50 _51=0
+    STGRAMS	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _45=0 _52
+    107 STU	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _66
+    s1 s(-1) PUXC	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body body _66
+    STREF	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount body _67
+    SWAP	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount _67 body
+    CTOS	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount _67 _68
+    STSLICER	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount _69
+    ENDC	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount msg
+    64 PUSHINT	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount msg _71=64
+    SENDRAWMSG
+    s6 PUSH	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount to_address
+    REWRITESTDADDR	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount _98 _99
+    NIP	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount key_addr
+    NOW	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount key_addr _77
+    NEWC	//  lend to_address owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount key_addr _77 _78
+    s0 s9 XCHG2	//  lend _77 owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount key_addr _78 to_address
+    STSLICER	//  lend _77 owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount key_addr _79
+    s1 s8 XCHG	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount _77 _79
+    64 STU	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow input_amount _81
+    SWAP	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _81 input_amount
+    STGRAMS	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _82
+    ENDC	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lendCell
+    s0 s6 s7 XCHG3
+    8 PUSHPOW2	//  jetton_wallet_otoken_address borrow owner_address jetton_wallet_x_address minter_otoken_address lendCell key_addr lend _85=256
+    DICTUSETREF	//  jetton_wallet_otoken_address borrow owner_address jetton_wallet_x_address minter_otoken_address lend
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    storage::save_data INLINECALLDICT
+  }>
+  lend::delete_lend PROC:<{
+    //  in_msg_body sender_address msg_value query_id
+    2 1 BLKDROP2	//  in_msg_body query_id
+    storage::load_data INLINECALLDICT	//  in_msg_body query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    s0 s7 XCHG	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow in_msg_body
+    LDGRAMS	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _173 _172
+    NIP	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow in_msg_body
+    LDMSGADDR	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _175 _174
+    DROP	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address
+    DUP	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address to_address
+    REWRITESTDADDR	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _176 _177
+    NIP	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr
+    s0 s8 PUSH2
+    8 PUSHPOW2	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr key_addr lend _21=256
+    DICTUGETOPTREF	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _22
+    CTOS	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lendSlice
+    7001 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lendSlice _24
+    SWAP	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _24 lendSlice
+    LDMSGADDR	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _24 _25 lendSlice
+    s4 s1 PUXC	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _24 lendSlice to_address _25
+    SDEQ	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _24 lendSlice _27
+    s1 s2 XCHG	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lendSlice _24 _27
+    THROWANYIF
+    64 LDU	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time lendSlice
+    7002 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time lendSlice _33
+    s2 PUSH	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time lendSlice _33 time
+    1 LESSINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time lendSlice _33 _35
+    THROWANYIF
+    LDGRAMS	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time _183 _182
+    DROP	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time lend_amount
+    7004 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time lend_amount _40
+    OVER	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time lend_amount _40 lend_amount
+    1 LESSINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr time lend_amount _40 _42
+    THROWANYIF
+    NOW
+    ROT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _45 time
+    SUB	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _46
+    86400 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _46 _47=86400
+    DIV	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time
+    7003 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time _49
+    OVER	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time _49 lend_time
+    4 LESSINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time _49 _51
+    THROWANYIF
+    OVER	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time lend_amount
+    15 MULCONST	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time _55
+    100 MULCONST	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time _57
+    100 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time _57 _58=100
+    DIV	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount lend_time _59
+    SWAP	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _59 lend_time
+    MUL	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _60
+    365 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _60 _61=365
+    DIV	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _62
+    100 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _62 _63=100
+    DIV	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _64
+    OVER	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount _64 lend_amount
+    ADD	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount plus_balance
+    7004 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr lend_amount plus_balance _66
+    s1 s2 PUXC	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _66 plus_balance plus_balance lend_amount
+    LESS	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _66 plus_balance _67
+    s1 s2 XCHG	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr plus_balance _66 _67
+    THROWANYIF
+    NEWDICT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr plus_balance _70
+    0xf8a7ea5 PUSHINT	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr plus_balance _70 _71
+    NEWC	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr plus_balance _70 _71 _72
+    32 STU	//  lend query_id owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr plus_balance _70 _74
+    s1 s10 XCHG	//  lend _70 owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr plus_balance query_id _74
+    64 STU	//  lend _70 owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr plus_balance _76
+    SWAP	//  lend _70 owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _76 plus_balance
+    STGRAMS	//  lend _70 owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _77
+    s2 PUSH	//  lend _70 owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _77 to_address
+    STSLICER	//  lend _70 owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address key_addr _78
+    s1 s8 XCHG	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _70 _78
+    STREF	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _79
+    0 PUSHINT	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _79 _80=0
+    STGRAMS	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _81
+    ENDC	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body
+    0 PUSHINT	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _84=0
+    24 PUSHINT	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _84=0 _85=24
+    NEWC	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _84=0 _85=24 _86
+    6 STU	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _84=0 _88
+    s7 PUSH	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _84=0 _88 jetton_wallet_x_address
+    STSLICER	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _84=0 _89
+    OVER	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _84=0 _89 _90=0
+    STGRAMS	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _84=0 _91
+    107 STU	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _105
+    s1 s(-1) PUXC	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body msg_body _105
+    STREF	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg_body _106
+    SWAP	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _106 msg_body
+    CTOS	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _106 _107
+    STSLICER	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _108
+    ENDC	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg
+    DUP
+    64 PUSHINT	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg msg _110=64
+    SENDRAWMSG
+    64 PUSHINT	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address msg _151=64
+    SENDRAWMSG
+    0 PUSHINT	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow to_address _154=0
+    NEWC
+    ROT	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _154=0 _155 to_address
+    STSLICER	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _154=0 _156
+    64 STU	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _158
+    0 PUSHINT	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _158 _159=0
+    STGRAMS	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow _160
+    ENDC	//  lend key_addr owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lendCell
+    s0 s6 s7 XCHG3
+    8 PUSHPOW2	//  jetton_wallet_otoken_address borrow owner_address jetton_wallet_x_address minter_otoken_address lendCell key_addr lend _163=256
+    DICTUSETREF	//  jetton_wallet_otoken_address borrow owner_address jetton_wallet_x_address minter_otoken_address lend
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address borrow lend
+    storage::save_data INLINECALLDICT
+  }>
+  recv_internal PROC:<{
+    //  my_balance msg_value in_msg_full in_msg_body
+    s3 POP	//  in_msg_body msg_value in_msg_full
+    storage::load_data INLINECALLDICT	//  in_msg_body msg_value in_msg_full _55 _56 _57 _58 _59 _60
+    s2 s3 XCHG
+    3 BLKDROP
+    s2 POP	//  in_msg_body msg_value in_msg_full jetton_wallet_otoken_address jetton_wallet_x_address
+    s0 s4 XCHG	//  jetton_wallet_x_address msg_value in_msg_full jetton_wallet_otoken_address in_msg_body
+    32 LDU	//  jetton_wallet_x_address msg_value in_msg_full jetton_wallet_otoken_address op in_msg_body
+    64 LDU	//  jetton_wallet_x_address msg_value in_msg_full jetton_wallet_otoken_address op query_id in_msg_body
+    s0 s4 XCHG	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id in_msg_full
+    utils::parse_sender_address CALLDICT	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address
+    0x7362d09c PUSHINT	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _21
+    s3 s(-1) PUXC	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address op _21
+    EQUAL	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _22
+    IF:<{	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address
+      0x15ba8 PUSHINT	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _23
+      s2 s(-1) PUXC	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address query_id _23
+      EQUAL	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _24
+      s1 s7 PUSH2	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _24 sender_address jetton_wallet_x_address
+      SDEQ	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _24 _25
+      AND	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _26
+      IF:<{	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address
+        s4 s0 s5 PUSH3
+        s4 PUSH	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address in_msg_body sender_address msg_value query_id
+        lend::new_lend CALLDICT
+      }>	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address
+      0x15f90 PUSHINT	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _28
+      s2 s(-1) PUXC	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address query_id _28
+      EQUAL	//  jetton_wallet_x_address msg_value in_msg_body jetton_wallet_otoken_address op query_id sender_address _29
+      s1 s4 PUXC	//  jetton_wallet_x_address msg_value in_msg_body _29 op query_id sender_address sender_address jetton_wallet_otoken_address
+      SDEQ	//  jetton_wallet_x_address msg_value in_msg_body _29 op query_id sender_address _30
+      s1 s4 XCHG	//  jetton_wallet_x_address msg_value in_msg_body sender_address op query_id _29 _30
+      AND	//  jetton_wallet_x_address msg_value in_msg_body sender_address op query_id _31
+      IF:<{	//  jetton_wallet_x_address msg_value in_msg_body sender_address op query_id
+        s3 s2 s4 PUSH3
+        s3 PUSH	//  jetton_wallet_x_address msg_value in_msg_body sender_address op query_id in_msg_body sender_address msg_value query_id
+        lend::delete_lend CALLDICT
+      }>	//  jetton_wallet_x_address msg_value in_msg_body sender_address op query_id
+      0x1adb0 PUSHINT	//  jetton_wallet_x_address msg_value in_msg_body sender_address op query_id _33
+      s1 s(-1) PUXC	//  jetton_wallet_x_address msg_value in_msg_body sender_address op query_id query_id _33
+      EQUAL	//  jetton_wallet_x_address msg_value in_msg_body sender_address op query_id _34
+      s3 s6 PUXC	//  _34 msg_value in_msg_body sender_address op query_id sender_address jetton_wallet_x_address
+      SDEQ	//  _34 msg_value in_msg_body sender_address op query_id _35
+      s1 s6 XCHG	//  query_id msg_value in_msg_body sender_address op _34 _35
+      AND	//  query_id msg_value in_msg_body sender_address op _36
+      IF:<{	//  query_id msg_value in_msg_body sender_address op
+        s2 PUSH	//  query_id msg_value in_msg_body sender_address op in_msg_body
+        borrow::delete_borrow CALLDICT
+      }>	//  query_id msg_value in_msg_body sender_address op
+    }>ELSE<{
+      s3 POP
+      s5 POP	//  query_id msg_value in_msg_body sender_address op
+    }>
+    0x186a0 PUSHINT	//  query_id msg_value in_msg_body sender_address op _38
+    s1 s(-1) PUXC	//  query_id msg_value in_msg_body sender_address op op _38
+    EQUAL	//  query_id msg_value in_msg_body sender_address op _39
+    IFJMP:<{	//  query_id msg_value in_msg_body sender_address op
+      DROP	//  query_id msg_value in_msg_body sender_address
+      s0 s0 s3 XCHG3	//  in_msg_body sender_address msg_value query_id
+      borrow::new_borrow CALLDICT
+    }>	//  query_id msg_value in_msg_body sender_address op
+    4 1 BLKDROP2	//  op
+    5000 PUSHINT	//  op _41
+    s1 s(-1) PUXC	//  op op _41
+    EQUAL	//  op _42
+    IFJMP:<{	//  op
+      DROP	// 
+    }>	//  op
+    5100 PUSHINT	//  op _44
+    s1 s(-1) PUXC	//  op op _44
+    EQUAL	//  op _45
+    IFJMP:<{	//  op
+      DROP	// 
+    }>	//  op
+    5200 PUSHINT	//  op _47
+    s1 s(-1) PUXC	//  op op _47
+    EQUAL	//  op _48
+    IFJMP:<{	//  op
+      DROP	// 
+    }>	//  op
+    5300 PUSHINT	//  op _50
+    EQUAL	//  _51
+    IFJMP:<{	// 
+    }>	// 
+    16 PUSHPOW2DEC	//  _53=65535
+    THROWANY
+  }>
+  init_data::set_default_initial_data PROC:<{
+    // 
+    7 PUSHINT	//  _1=7
+    5 PUSHINT	//  _1=7 _2=5
+    1 PUSHINT	//  _1=7 _2=5 _3=1
+    NEWC	//  _1=7 _2=5 _3=1 _4
+    2 STU	//  _1=7 _2=5 _6
+    9 STU	//  _1=7 _8
+    5 STU	//  _10
+    ENDC	//  owner_address
+    8 PUSHINT	//  owner_address _13=8
+    5 PUSHINT	//  owner_address _13=8 _14=5
+    1 PUSHINT	//  owner_address _13=8 _14=5 _15=1
+    NEWC	//  owner_address _13=8 _14=5 _15=1 _16
+    2 STU	//  owner_address _13=8 _14=5 _18
+    9 STU	//  owner_address _13=8 _20
+    5 STU	//  owner_address _22
+    ENDC	//  owner_address jetton_wallet_x_address
+    9 PUSHINT	//  owner_address jetton_wallet_x_address _25=9
+    5 PUSHINT	//  owner_address jetton_wallet_x_address _25=9 _26=5
+    1 PUSHINT	//  owner_address jetton_wallet_x_address _25=9 _26=5 _27=1
+    NEWC	//  owner_address jetton_wallet_x_address _25=9 _26=5 _27=1 _28
+    2 STU	//  owner_address jetton_wallet_x_address _25=9 _26=5 _30
+    9 STU	//  owner_address jetton_wallet_x_address _25=9 _32
+    5 STU	//  owner_address jetton_wallet_x_address _34
+    ENDC	//  owner_address jetton_wallet_x_address minter_otoken_address
+    6 PUSHINT	//  owner_address jetton_wallet_x_address minter_otoken_address _37=6
+    5 PUSHINT	//  owner_address jetton_wallet_x_address minter_otoken_address _37=6 _38=5
+    1 PUSHINT	//  owner_address jetton_wallet_x_address minter_otoken_address _37=6 _38=5 _39=1
+    NEWC	//  owner_address jetton_wallet_x_address minter_otoken_address _37=6 _38=5 _39=1 _40
+    2 STU	//  owner_address jetton_wallet_x_address minter_otoken_address _37=6 _38=5 _42
+    9 STU	//  owner_address jetton_wallet_x_address minter_otoken_address _37=6 _44
+    5 STU	//  owner_address jetton_wallet_x_address minter_otoken_address _46
+    ENDC	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address
+    NEWDICT	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _48
+    NEWDICT	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _48 _49
+    NEWC	//  owner_address jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _48 _49 _50
+    s0 s6 XCHG	//  _50 jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _48 _49 owner_address
+    CTOS	//  _50 jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _48 _49 _51
+    s1 s6 XCHG	//  _49 jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _48 _50 _51
+    STSLICER	//  _49 jetton_wallet_x_address minter_otoken_address jetton_wallet_otoken_address _48 _52
+    s0 s4 XCHG	//  _49 _52 minter_otoken_address jetton_wallet_otoken_address _48 jetton_wallet_x_address
+    CTOS	//  _49 _52 minter_otoken_address jetton_wallet_otoken_address _48 _53
+    s1 s4 XCHG	//  _49 _48 minter_otoken_address jetton_wallet_otoken_address _52 _53
+    STSLICER	//  _49 _48 minter_otoken_address jetton_wallet_otoken_address _54
+    s0 s2 XCHG	//  _49 _48 _54 jetton_wallet_otoken_address minter_otoken_address
+    CTOS	//  _49 _48 _54 jetton_wallet_otoken_address _55
+    s1 s2 XCHG	//  _49 _48 jetton_wallet_otoken_address _54 _55
+    STSLICER	//  _49 _48 jetton_wallet_otoken_address _56
+    SWAP	//  _49 _48 _56 jetton_wallet_otoken_address
+    CTOS	//  _49 _48 _56 _57
+    STSLICER	//  _49 _48 _58
+    s1 s2 XCHG	//  _48 _49 _58
+    STDICT	//  _48 _59
+    STDICT	//  _60
+    ENDC	//  _61
+    c4 POP
+  }>
+  __test_change_admin PROC:<{
+    // 
+    init_data::set_default_initial_data CALLDICT
+    7 PUSHINT	//  _2=7
+    5 PUSHINT	//  _2=7 _3=5
+    1 PUSHINT	//  _2=7 _3=5 _4=1
+    NEWC	//  _2=7 _3=5 _4=1 _5
+    2 STU	//  _2=7 _3=5 _7
+    9 STU	//  _2=7 _9
+    5 STU	//  _11
+    ENDC	//  owner_address
+    1 PUSHINT	//  owner_address _14=1
+    5 PUSHINT	//  owner_address _14=1 _15=5
+    OVER	//  owner_address _14=1 _15=5 _16=1
+    NEWC	//  owner_address _14=1 _15=5 _16=1 _17
+    2 STU	//  owner_address _14=1 _15=5 _19
+    9 STU	//  owner_address _14=1 _21
+    5 STU	//  owner_address _23
+    ENDC	//  owner_address test_admin
+    1 PUSHINT	//  owner_address test_admin _26=1
+    5000 PUSHINT	//  owner_address test_admin _26=1 _27
+    NEWC	//  owner_address test_admin _26=1 _27 _28
+    32 STU	//  owner_address test_admin _26=1 _30
+    64 STU	//  owner_address test_admin _32
+    OVER	//  owner_address test_admin _32 test_admin
+    CTOS	//  owner_address test_admin _32 _33
+    STSLICER	//  owner_address test_admin _34
+    ENDC	//  owner_address test_admin message_body
+    DUP	//  owner_address test_admin message_body message_body
+    CTOS	//  owner_address test_admin message_body msg_mody
+    0 PUSHINT	//  owner_address test_admin message_body msg_mody _39=0
+    6 PUSHINT	//  owner_address test_admin message_body msg_mody _39=0 _40=6
+    NEWC	//  owner_address test_admin message_body msg_mody _39=0 _40=6 _41
+    4 STU	//  owner_address test_admin message_body msg_mody _39=0 _43
+    s5 PUSH	//  owner_address test_admin message_body msg_mody _39=0 _43 owner_address
+    CTOS	//  owner_address test_admin message_body msg_mody _39=0 _43 _44
+    STSLICER	//  owner_address test_admin message_body msg_mody _39=0 _45
+    s0 s5 XCHG	//  _45 test_admin message_body msg_mody _39=0 owner_address
+    CTOS	//  _45 test_admin message_body msg_mody _39=0 _46
+    s1 s5 XCHG	//  _39=0 test_admin message_body msg_mody _45 _46
+    STSLICER	//  _39=0 test_admin message_body msg_mody _47
+    100 PUSHINT	//  _39=0 test_admin message_body msg_mody _47 _48=100
+    STGRAMS	//  _39=0 test_admin message_body msg_mody _49
+    s1 s4 XCHG	//  msg_mody test_admin message_body _39=0 _49
+    107 STU	//  msg_mody test_admin message_body _63
+    STREF	//  msg_mody test_admin _64
+    s2 PUSH	//  msg_mody test_admin _64 msg_mody
+    STSLICER	//  msg_mody test_admin _65
+    ENDC	//  msg_mody test_admin message
+    CONT:<{
+      recv_internal CALLDICT
+    }>	//  msg_mody test_admin message _69
+    0 PUSHINT	//  msg_mody test_admin message _69 _71=0
+    s0 s2 XCHG
+    100 PUSHINT
+    s0 s1 s5 XCHG3	//  _69 test_admin _71=0 _72=100 message msg_mody
+    4 TUPLE	//  _69 test_admin _70
+    s1 s2 XCHG	//  test_admin _69 _70
+    invoke_method CALLDICT	//  test_admin _85 _86
+    DROP	//  test_admin gas_used1
+    CONT:<{
+      get_owner_address CALLDICT
+    }>	//  test_admin gas_used1 _76
+    0 TUPLE	//  test_admin gas_used1 _76 _77
+    invoke_method CALLDICT	//  test_admin gas_used1 _87 _88
+    NIP	//  test_admin gas_used1 stack
+    UNSINGLE	//  test_admin gas_used1 address
+    s0 s2 XCHG	//  address gas_used1 test_admin
+    CTOS	//  address gas_used1 _82
+    ROT	//  gas_used1 _82 address
+    SDEQ	//  gas_used1 _83
+    1 THROWIFNOT
+  }>
+  __test_change_wallet_x PROC:<{
+    // 
+    init_data::set_default_initial_data CALLDICT
+    7 PUSHINT	//  _2=7
+    5 PUSHINT	//  _2=7 _3=5
+    1 PUSHINT	//  _2=7 _3=5 _4=1
+    NEWC	//  _2=7 _3=5 _4=1 _5
+    2 STU	//  _2=7 _3=5 _7
+    9 STU	//  _2=7 _9
+    5 STU	//  _11
+    ENDC	//  owner_address
+    1 PUSHINT	//  owner_address _14=1
+    5 PUSHINT	//  owner_address _14=1 _15=5
+    OVER	//  owner_address _14=1 _15=5 _16=1
+    NEWC	//  owner_address _14=1 _15=5 _16=1 _17
+    2 STU	//  owner_address _14=1 _15=5 _19
+    9 STU	//  owner_address _14=1 _21
+    5 STU	//  owner_address _23
+    ENDC	//  owner_address test_admin
+    1 PUSHINT	//  owner_address test_admin _26=1
+    5100 PUSHINT	//  owner_address test_admin _26=1 _27
+    NEWC	//  owner_address test_admin _26=1 _27 _28
+    32 STU	//  owner_address test_admin _26=1 _30
+    64 STU	//  owner_address test_admin _32
+    OVER	//  owner_address test_admin _32 test_admin
+    CTOS	//  owner_address test_admin _32 _33
+    STSLICER	//  owner_address test_admin _34
+    ENDC	//  owner_address test_admin message_body
+    DUP	//  owner_address test_admin message_body message_body
+    CTOS	//  owner_address test_admin message_body msg_mody
+    0 PUSHINT	//  owner_address test_admin message_body msg_mody _39=0
+    6 PUSHINT	//  owner_address test_admin message_body msg_mody _39=0 _40=6
+    NEWC	//  owner_address test_admin message_body msg_mody _39=0 _40=6 _41
+    4 STU	//  owner_address test_admin message_body msg_mody _39=0 _43
+    s5 PUSH	//  owner_address test_admin message_body msg_mody _39=0 _43 owner_address
+    CTOS	//  owner_address test_admin message_body msg_mody _39=0 _43 _44
+    STSLICER	//  owner_address test_admin message_body msg_mody _39=0 _45
+    s0 s5 XCHG	//  _45 test_admin message_body msg_mody _39=0 owner_address
+    CTOS	//  _45 test_admin message_body msg_mody _39=0 _46
+    s1 s5 XCHG	//  _39=0 test_admin message_body msg_mody _45 _46
+    STSLICER	//  _39=0 test_admin message_body msg_mody _47
+    100 PUSHINT	//  _39=0 test_admin message_body msg_mody _47 _48=100
+    STGRAMS	//  _39=0 test_admin message_body msg_mody _49
+    s1 s4 XCHG	//  msg_mody test_admin message_body _39=0 _49
+    107 STU	//  msg_mody test_admin message_body _63
+    STREF	//  msg_mody test_admin _64
+    s2 PUSH	//  msg_mody test_admin _64 msg_mody
+    STSLICER	//  msg_mody test_admin _65
+    ENDC	//  msg_mody test_admin message
+    CONT:<{
+      recv_internal CALLDICT
+    }>	//  msg_mody test_admin message _69
+    0 PUSHINT	//  msg_mody test_admin message _69 _71=0
+    s0 s2 XCHG
+    100 PUSHINT
+    s0 s1 s5 XCHG3	//  _69 test_admin _71=0 _72=100 message msg_mody
+    4 TUPLE	//  _69 test_admin _70
+    s1 s2 XCHG	//  test_admin _69 _70
+    invoke_method CALLDICT	//  test_admin _85 _86
+    DROP	//  test_admin gas_used1
+    CONT:<{
+      get_otoken_x_jetton_address CALLDICT
+    }>	//  test_admin gas_used1 _76
+    0 TUPLE	//  test_admin gas_used1 _76 _77
+    invoke_method CALLDICT	//  test_admin gas_used1 _87 _88
+    NIP	//  test_admin gas_used1 stack
+    UNSINGLE	//  test_admin gas_used1 address
+    s0 s2 XCHG	//  address gas_used1 test_admin
+    CTOS	//  address gas_used1 _82
+    ROT	//  gas_used1 _82 address
+    SDEQ	//  gas_used1 _83
+    1 THROWIFNOT
+  }>
+  __test_change_minter PROC:<{
+    // 
+    init_data::set_default_initial_data CALLDICT
+    7 PUSHINT	//  _2=7
+    5 PUSHINT	//  _2=7 _3=5
+    1 PUSHINT	//  _2=7 _3=5 _4=1
+    NEWC	//  _2=7 _3=5 _4=1 _5
+    2 STU	//  _2=7 _3=5 _7
+    9 STU	//  _2=7 _9
+    5 STU	//  _11
+    ENDC	//  owner_address
+    1 PUSHINT	//  owner_address _14=1
+    5 PUSHINT	//  owner_address _14=1 _15=5
+    OVER	//  owner_address _14=1 _15=5 _16=1
+    NEWC	//  owner_address _14=1 _15=5 _16=1 _17
+    2 STU	//  owner_address _14=1 _15=5 _19
+    9 STU	//  owner_address _14=1 _21
+    5 STU	//  owner_address _23
+    ENDC	//  owner_address test_admin
+    1 PUSHINT	//  owner_address test_admin _26=1
+    5200 PUSHINT	//  owner_address test_admin _26=1 _27
+    NEWC	//  owner_address test_admin _26=1 _27 _28
+    32 STU	//  owner_address test_admin _26=1 _30
+    64 STU	//  owner_address test_admin _32
+    OVER	//  owner_address test_admin _32 test_admin
+    CTOS	//  owner_address test_admin _32 _33
+    STSLICER	//  owner_address test_admin _34
+    ENDC	//  owner_address test_admin message_body
+    DUP	//  owner_address test_admin message_body message_body
+    CTOS	//  owner_address test_admin message_body msg_mody
+    0 PUSHINT	//  owner_address test_admin message_body msg_mody _39=0
+    6 PUSHINT	//  owner_address test_admin message_body msg_mody _39=0 _40=6
+    NEWC	//  owner_address test_admin message_body msg_mody _39=0 _40=6 _41
+    4 STU	//  owner_address test_admin message_body msg_mody _39=0 _43
+    s5 PUSH	//  owner_address test_admin message_body msg_mody _39=0 _43 owner_address
+    CTOS	//  owner_address test_admin message_body msg_mody _39=0 _43 _44
+    STSLICER	//  owner_address test_admin message_body msg_mody _39=0 _45
+    s0 s5 XCHG	//  _45 test_admin message_body msg_mody _39=0 owner_address
+    CTOS	//  _45 test_admin message_body msg_mody _39=0 _46
+    s1 s5 XCHG	//  _39=0 test_admin message_body msg_mody _45 _46
+    STSLICER	//  _39=0 test_admin message_body msg_mody _47
+    100 PUSHINT	//  _39=0 test_admin message_body msg_mody _47 _48=100
+    STGRAMS	//  _39=0 test_admin message_body msg_mody _49
+    s1 s4 XCHG	//  msg_mody test_admin message_body _39=0 _49
+    107 STU	//  msg_mody test_admin message_body _63
+    STREF	//  msg_mody test_admin _64
+    s2 PUSH	//  msg_mody test_admin _64 msg_mody
+    STSLICER	//  msg_mody test_admin _65
+    ENDC	//  msg_mody test_admin message
+    CONT:<{
+      recv_internal CALLDICT
+    }>	//  msg_mody test_admin message _69
+    0 PUSHINT	//  msg_mody test_admin message _69 _71=0
+    s0 s2 XCHG
+    100 PUSHINT
+    s0 s1 s5 XCHG3	//  _69 test_admin _71=0 _72=100 message msg_mody
+    4 TUPLE	//  _69 test_admin _70
+    s1 s2 XCHG	//  test_admin _69 _70
+    invoke_method CALLDICT	//  test_admin _85 _86
+    DROP	//  test_admin gas_used1
+    CONT:<{
+      get_otoken_minter_address CALLDICT
+    }>	//  test_admin gas_used1 _76
+    0 TUPLE	//  test_admin gas_used1 _76 _77
+    invoke_method CALLDICT	//  test_admin gas_used1 _87 _88
+    NIP	//  test_admin gas_used1 stack
+    UNSINGLE	//  test_admin gas_used1 address
+    s0 s2 XCHG	//  address gas_used1 test_admin
+    CTOS	//  address gas_used1 _82
+    ROT	//  gas_used1 _82 address
+    SDEQ	//  gas_used1 _83
+    1 THROWIFNOT
+  }>
+  __test_change_wallet_o PROC:<{
+    // 
+    init_data::set_default_initial_data CALLDICT
+    7 PUSHINT	//  _2=7
+    5 PUSHINT	//  _2=7 _3=5
+    1 PUSHINT	//  _2=7 _3=5 _4=1
+    NEWC	//  _2=7 _3=5 _4=1 _5
+    2 STU	//  _2=7 _3=5 _7
+    9 STU	//  _2=7 _9
+    5 STU	//  _11
+    ENDC	//  owner_address
+    1 PUSHINT	//  owner_address _14=1
+    5 PUSHINT	//  owner_address _14=1 _15=5
+    OVER	//  owner_address _14=1 _15=5 _16=1
+    NEWC	//  owner_address _14=1 _15=5 _16=1 _17
+    2 STU	//  owner_address _14=1 _15=5 _19
+    9 STU	//  owner_address _14=1 _21
+    5 STU	//  owner_address _23
+    ENDC	//  owner_address test_admin
+    1 PUSHINT	//  owner_address test_admin _26=1
+    5300 PUSHINT	//  owner_address test_admin _26=1 _27
+    NEWC	//  owner_address test_admin _26=1 _27 _28
+    32 STU	//  owner_address test_admin _26=1 _30
+    64 STU	//  owner_address test_admin _32
+    OVER	//  owner_address test_admin _32 test_admin
+    CTOS	//  owner_address test_admin _32 _33
+    STSLICER	//  owner_address test_admin _34
+    ENDC	//  owner_address test_admin message_body
+    DUP	//  owner_address test_admin message_body message_body
+    CTOS	//  owner_address test_admin message_body msg_mody
+    0 PUSHINT	//  owner_address test_admin message_body msg_mody _39=0
+    6 PUSHINT	//  owner_address test_admin message_body msg_mody _39=0 _40=6
+    NEWC	//  owner_address test_admin message_body msg_mody _39=0 _40=6 _41
+    4 STU	//  owner_address test_admin message_body msg_mody _39=0 _43
+    s5 PUSH	//  owner_address test_admin message_body msg_mody _39=0 _43 owner_address
+    CTOS	//  owner_address test_admin message_body msg_mody _39=0 _43 _44
+    STSLICER	//  owner_address test_admin message_body msg_mody _39=0 _45
+    s0 s5 XCHG	//  _45 test_admin message_body msg_mody _39=0 owner_address
+    CTOS	//  _45 test_admin message_body msg_mody _39=0 _46
+    s1 s5 XCHG	//  _39=0 test_admin message_body msg_mody _45 _46
+    STSLICER	//  _39=0 test_admin message_body msg_mody _47
+    100 PUSHINT	//  _39=0 test_admin message_body msg_mody _47 _48=100
+    STGRAMS	//  _39=0 test_admin message_body msg_mody _49
+    s1 s4 XCHG	//  msg_mody test_admin message_body _39=0 _49
+    107 STU	//  msg_mody test_admin message_body _63
+    STREF	//  msg_mody test_admin _64
+    s2 PUSH	//  msg_mody test_admin _64 msg_mody
+    STSLICER	//  msg_mody test_admin _65
+    ENDC	//  msg_mody test_admin message
+    CONT:<{
+      recv_internal CALLDICT
+    }>	//  msg_mody test_admin message _69
+    0 PUSHINT	//  msg_mody test_admin message _69 _71=0
+    s0 s2 XCHG
+    100 PUSHINT
+    s0 s1 s5 XCHG3	//  _69 test_admin _71=0 _72=100 message msg_mody
+    4 TUPLE	//  _69 test_admin _70
+    s1 s2 XCHG	//  test_admin _69 _70
+    invoke_method CALLDICT	//  test_admin _85 _86
+    DROP	//  test_admin gas_used1
+    CONT:<{
+      get_otoken_jetton_address CALLDICT
+    }>	//  test_admin gas_used1 _76
+    0 TUPLE	//  test_admin gas_used1 _76 _77
+    invoke_method CALLDICT	//  test_admin gas_used1 _87 _88
+    NIP	//  test_admin gas_used1 stack
+    UNSINGLE	//  test_admin gas_used1 address
+    s0 s2 XCHG	//  address gas_used1 test_admin
+    CTOS	//  address gas_used1 _82
+    ROT	//  gas_used1 _82 address
+    SDEQ	//  gas_used1 _83
+    1 THROWIFNOT
+  }>
+}END>c
