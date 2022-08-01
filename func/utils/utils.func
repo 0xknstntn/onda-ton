@@ -1,0 +1,17 @@
+(cell) udict_get_maybe_ref(cell dict, int key_len, int index) asm(index dict key_len) "DICTUGETOPTREF";
+(int) equal_slices(slice s1, slice s2) asm "SDEQ";
+
+slice utils::get_null_slice() {
+        return begin_parse(begin_cell().end_cell());
+}
+
+cell utils::get_null_cell() {
+        return begin_cell().end_cell();
+}
+
+slice utils::parse_sender_address (cell in_msg_full) {
+        var cs = in_msg_full.begin_parse();
+        int flags = cs~load_uint(4);
+        slice sender_address = cs~load_msg_addr(); 
+        return sender_address;
+}

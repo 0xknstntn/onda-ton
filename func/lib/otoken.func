@@ -1,0 +1,88 @@
+() otoken::transfer_otoken(slice msg) {
+    (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
+	int query_id = in_msg_body~load_uint(64);
+	int input_amount = in_msg_body~load_grams();
+	slice to_address = in_msg_body~load_msg_addr();
+	cell null_cell = begin_cell().end_cell();
+	slice null_slice = begin_parse(null_cell);
+	slice either_forward_payload = in_msg_body;
+	var msg_body = begin_cell()
+		.store_uint(op::mint(), 32)
+		.store_uint(query_id, 64)
+		.store_grams(input_amount)
+		.store_slice(to_address)
+		.store_slice(my_address())
+		.store_uint(0, 1)
+		.store_grams(0)
+		.store_uint(now(), 64)
+		.store_slice(either_forward_payload)
+	.end_cell();
+	var msg = begin_cell()
+		.store_uint(0x18, 6)
+		.store_slice(jetton_wallet_otoken_address)
+		.store_grams(0)
+		.store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+		.store_ref(msg_body)
+		.store_slice(begin_parse(msg_body))
+	.end_cell();
+	send_raw_message(msg, 64);
+	return ();
+}
+
+() otoken::burn_otoken(slice msg) {
+	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell loan) = storage::load_data();
+	int query_id = msg~load_uint(64);
+	int burn_amount = msg~load_grams();
+	var msg_body = begin_cell()
+		.store_uint(op::burn(), 32)
+		.store_uint(query_id, 64)
+		.store_grams(burn_amount)
+		.store_slice(my_address())
+	.end_cell();
+	var msg = begin_cell()
+		.store_uint(0x18, 6)
+		.store_slice(jetton_wallet_otoken_address)
+		.store_grams(0)
+		.store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+		.store_ref(msg_body)
+		.store_slice(begin_parse(msg_body))
+	.end_cell();
+	send_raw_message(msg, 64);
+	return ();
+}
+
+() otoken::mint_otoken(slice msg) {
+	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell loan) = storage::load_data();
+	int query_id = in_msg_body~load_uint(64);
+	slice to_address = in_msg_body~load_msg_addr();
+	int input_amount = in_msg_body~load_grams();
+	cell null_cell = begin_cell().end_cell();
+	slice null_slice = begin_parse(null_cell);
+	slice either_forward_payload = in_msg_body;
+
+	var transferBody = begin_cell()
+		.store_uint(op::internal_transfer(), 32)
+		.store_uint(query_id, 64)
+		.store_grams(input_amount)
+		.store_slice(null_slice)
+		.store_slice(null_slice)
+		.store_grams(0)
+	.end_cell();
+	var msg_body = begin_cell()
+		.store_uint(op::mint(), 32)
+		.store_uint(query_id, 64)
+		.store_slice(to_address)
+		.store_grams(input_amount)
+		.store_ref(transferBody)
+	.end_cell();
+	var msg = begin_cell()
+		.store_uint(0x18, 6)
+		.store_slice(jetton_wallet_otoken_address)
+		.store_grams(0)
+		.store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+		.store_ref(msg_body)
+		.store_slice(begin_parse(msg_body))
+	.end_cell();
+	send_raw_message(msg, 64);
+	return ();
+}

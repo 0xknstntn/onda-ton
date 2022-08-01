@@ -1,0 +1,5 @@
+int err::no_admin() asm "7000 PUSHINT"; 
+int err::not_equal() asm "7001 PUSHINT"; 
+int err::wrong_time() asm "7002 PUSHINT"; 
+int err::small_days() asm "7003 PUSHINT"; 
+int err::wrong_amount() asm "7004 PUSHINT"; 

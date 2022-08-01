@@ -1,0 +1,30 @@
+(slice, int, int) get_lend_info(slice msg) method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
+        slice address = msg~load_msg_addr();
+        var (_, key_addr) = parse_std_addr(address);
+        slice lendSlice = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        return (lendSlice~load_msg_addr(), lendSlice~load_uint(64), lendSlice~load_grams());
+}
+
+(slice, int, int) get_borrow_info(slice msg) method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
+        slice address = msg~load_msg_addr();
+        var (_, key_addr) = parse_std_addr(address);
+        slice borrowSlice = (borrow.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        return (borrowSlice~load_msg_addr(), borrowSlice~load_uint(64), borrowSlice~load_grams());
+}
+
+(int, int) get_otoken_jetton_address() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
+        return parse_std_addr(jetton_wallet_otoken_address);
+}
+
+(int, int) get_otoken_minter_address() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
+        return parse_std_addr(minter_otoken_address);
+}
+
+(int, int) get_otoken_x_jetton_address() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
+        return parse_std_addr(jetton_wallet_x_address);
+}

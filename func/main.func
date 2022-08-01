@@ -1,0 +1,40 @@
+{-
+	@title: Onda Lending Core
+	@custom: version 1.0
+	@author Konstantin Klyuchnikov (knstntn.asuoki.eth)
+-}
+
+#include "storage.func";
+#include "utils/utils.func";
+#include "utils/codes.func";
+#include "utils/exitcodes.func";
+#include "lib/get-methods.func";
+#include "lib/admin.func";
+#include "lib/user-borrow.func";
+#include "lib/user-lend.func";
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell loan) = storage::load_data();
+	int op = in_msg_body~load_uint(32);
+	int query_id = in_msg_body~load_uint(64);
+	slice sender_address = utils::parse_sender_address(in_msg_full);
+
+	if (op == op::transfer_notification()) {
+		if ((query_id == query::create_lend()) & (equal_slices(sender_address, jetton_wallet_x_address))) {
+			lend::new_lend(in_msg_body, sender_address, msg_value, query_id);
+		}
+		if ((query_id == query::delete_lend()) & (equal_slices(sender_address, jetton_wallet_otoken_address))) {
+			lend::delete_lend(in_msg_body, sender_address, msg_value, query_id);
+		}
+		if ((query_id == query::delete_borrow()) & (equal_slices(sender_address, jetton_wallet_x_address))) {
+			borrow::delete_borrow(in_msg_body);
+		}
+	}
+
+	if (op == op::new_borrow()) { borrow::new_borrow(in_msg_body, sender_address, msg_value, query_id); }
+	if (op == admin_op::change_admin()) { admin::change_admin(in_msg_body, sender_address); }
+	if (op == admin_op::change_wallet_x()) { admin::change_wallet_x(in_msg_body, sender_address); }
+	if (op == admin_op::change_minter()) { admin::change_minter(in_msg_body, sender_address); }
+	if (op == admin_op::change_wallet_o()) { admin::change_wallet_o(in_msg_body, sender_address); }
+	throw(0xffff); 
+}
