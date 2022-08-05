@@ -17,3 +17,6 @@ int admin_op::change_admin() asm "5000 PUSHINT";
 int admin_op::change_wallet_x() asm "5100 PUSHINT";
 int admin_op::change_minter() asm "5200 PUSHINT";
 int admin_op::change_wallet_o() asm "5300 PUSHINT";
+
+;; test
+int test::change_ma() asm "40666 PUSHINT";

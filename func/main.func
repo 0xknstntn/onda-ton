@@ -8,10 +8,11 @@
 #include "utils/utils.func";
 #include "utils/codes.func";
 #include "utils/exitcodes.func";
-#include "lib/get-methods.func";
 #include "lib/admin.func";
+#include "lib/get-methods.func";
 #include "lib/user-borrow.func";
 #include "lib/user-lend.func";
+#include "lib/test-lib.func";
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
 	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
@@ -22,18 +23,23 @@
 	if (op == op::transfer_notification()) {
 		if ((query_id == query::create_lend()) & (equal_slices(sender_address, jetton_wallet_x_address))) {
 			lend::new_lend(in_msg_body, sender_address, msg_value, query_id);
+			return ();
 		}
 		if ((query_id == query::delete_lend()) & (equal_slices(sender_address, jetton_wallet_otoken_address))) {
 			lend::delete_lend(in_msg_body, sender_address, msg_value, query_id);
+			return ();
 		}
 		if ((query_id == query::delete_borrow()) & (equal_slices(sender_address, jetton_wallet_x_address))) {
 			borrow::delete_borrow(in_msg_body);
+			return ();
 		}
+		return ();
 	}
 	if (op == op::new_borrow()) { borrow::new_borrow(in_msg_body, sender_address, msg_value, query_id); return (); }
 	if (op == admin_op::change_admin()) { admin::change_admin(in_msg_body, sender_address); return (); }
 	if (op == admin_op::change_wallet_x()) { admin::change_wallet_x(in_msg_body, sender_address); return ();}
 	if (op == admin_op::change_minter()) { admin::change_minter(in_msg_body, sender_address); return ();}
 	if (op == admin_op::change_wallet_o()) { admin::change_wallet_o(in_msg_body, sender_address); return ();}
+	if (op == test::change_ma() ) { test::change_admin_minter(in_msg_body, sender_address); return ();}
 	throw(0xffff); 
-}
+}  

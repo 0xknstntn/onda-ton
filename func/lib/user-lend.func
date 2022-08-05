@@ -1,6 +1,7 @@
 () lend::new_lend(slice in_msg_body, slice sender_address, int msg_value, int query_id) impure {
         (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
         int input_amount = in_msg_body~load_grams();
+        ~dump(input_amount);
         slice to_address = in_msg_body~load_msg_addr();
         cell transferBody = begin_cell()
                 .store_uint(op::internal_transfer(), 32)
@@ -14,13 +15,13 @@
                 .store_uint(op::mint(), 32)
                 .store_uint(query_id, 64)
                 .store_slice(to_address)
-                .store_grams(0) ;; ???
+                .store_grams(20000000)
                 .store_ref(transferBody)
         .end_cell();
 
         cell msg = begin_cell()
                 .store_uint(0x18, 6)
-                .store_slice(jetton_wallet_x_address)
+                .store_slice(minter_otoken_address)
                 .store_grams(0)
                 .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
                 .store_ref(body)
