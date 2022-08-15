@@ -1,0 +1,50 @@
+#!/usr/bin/fift -s
+"TonUtil.fif" include
+"Asm.fif" include
+
+<{
+  SETCP0 ACCEPT
+  now PUSHINT
+  "../build/contract.fif" include PUSHREF SETCODE
+}>s =: contract_code
+
+variable borrow
+variable lend
+
+dictnew borrow !
+dictnew lend !
+
+<b 
+"Ef8AAAAAAAAAAOL69nUxYNOzLqUAo0DADrF2hNy5K9gRZdhS" $>smca 2drop Addr,
+"Ef8AAAAAAAAAAOL69nUxYNOzLqUAo0DADrF2hNy5K9gRZdhS" $>smca 2drop Addr,
+"Ef8AAAAAAAAAAOL69nUxYNOzLqUAo0DADrF2hNy5K9gRZdhS" $>smca 2drop Addr,
+b> =: info
+
+<b
+"EQB1BIFXrHRZL_SwW1dSaQ-6Gj51dGINydHgli0kJLdfIeYB" $>smca 2drop Addr,
+info ref,
+borrow @ dict,
+lend @ dict,
+b> =: contract_storage
+
+0 =: wc
+
+<b b{00110} s, <b contract_code s, b> ref, contract_storage ref, b>
+dup =: state_init
+dup hashu wc swap 2constant contract_addr
+
+."Contract address = " contract_addr .addr cr
+
+
+
+."Non-bounceable address (for init): " contract_addr 7 .Addr cr
+."Bounceable address (for later access): " contract_addr 6 .Addr cr
+
+
+<b b> =: init_message
+
+
+<b b{1000100} s, contract_addr addr, b{000010} s, state_init <s s, b{0} s, init_message <s s, b>
+2 boc+>B
+"./build/boc/onda.boc" tuck B>file
+."(Saved collection contract creating query to file " type .")" cr

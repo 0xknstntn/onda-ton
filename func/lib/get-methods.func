@@ -33,3 +33,20 @@ slice get_owner_address() method_id {
         (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
         return jetton_wallet_x_address;
 }
+{-
+(cell, slice) test_create_lend(cell in_msg_full, slice in_msg_body, int msg_value) method_id {
+        int op = in_msg_body~load_uint(32);
+	int query_id = in_msg_body~load_uint(64);
+        slice sender_address = utils::parse_sender_address(in_msg_full);
+        var (msg, body) = lend::new_lend(in_msg_body, sender_address, msg_value, query_id);
+        return (msg, body);
+}
+
+(cell, slice) test_delete_lend(cell in_msg_full, slice in_msg_body, int msg_value) method_id {
+        int op = in_msg_body~load_uint(32);
+	int query_id = in_msg_body~load_uint(64);
+        slice sender_address = utils::parse_sender_address(in_msg_full);
+        var (msg, body) = lend::delete_lend(in_msg_body, sender_address, msg_value, query_id);
+        return (msg, body);
+}
+-}

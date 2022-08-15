@@ -9,11 +9,11 @@
 #include "utils/codes.func";
 #include "utils/exitcodes.func";
 #include "lib/admin.func";
-#include "lib/get-methods.func";
 #include "lib/user-borrow.func";
-#include "lib/user-lend.func";
+#include "lib/user-lend-transfer.func";
 #include "lib/test-lib.func";
-
+#include "lib/get-methods.func";
+ 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
 	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
 	int op = in_msg_body~load_uint(32);

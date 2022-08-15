@@ -1,0 +1,76 @@
+#include "init-data.func";
+#include "../func/utils/codes.func";
+#include "../func/utils/utils.func";
+
+int __test_create_lend(){
+        init_data::set_default_initial_data();
+        int jetton_amount = 10000000000;
+        cell owner_address = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(5, 9) 
+                .store_uint(7, 5)
+        .end_cell();
+        cell from_address = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(5, 9) 
+                .store_uint(4, 5)
+        .end_cell();
+        var msg_body = begin_cell()
+                .store_uint(op::transfer_notification(), 32)
+                .store_uint(query::create_lend(), 64)
+                .store_coins(jetton_amount)
+                .store_slice(from_address.begin_parse())
+                .store_slice(utils::get_null_slice())
+        .end_cell();
+         var msg = begin_cell()
+                .store_uint(0x10, 6) ;; we should not bounce here cause receiver can have uninitialized contract
+                .store_slice(owner_address.begin_parse())
+                .store_coins(1000000)
+                .store_uint(1, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .store_ref(msg_body)
+                .store_slice(msg_body.begin_parse())
+        .end_cell();
+        var (gas_used1, stack) = invoke_method(test_create_lend, [msg, msg_body.begin_parse(), 1000000]);
+        [cell msg_return, slice msg_return_body] = stack;
+        init_data::set_default_initial_data_wallet();
+        var (gas_used3, stack1) = invoke_method(get_wallet_data, []);
+        [int total_supply, slice admin_address, slice jetton_master_address, cell jetton_wallet_code] = stack1;
+        throw_unless(10, total_supply == 100000000000000000);
+        var (gas_used2, _) = invoke_method(recv_any, [100000000000000, 1000000000000, msg_return, msg_return_body]);
+        var (gas_used4, stack2) = invoke_method(get_wallet_data, []);
+        [int total_supply, slice admin_address, slice jetton_master_address, cell jetton_wallet_code] = stack2;
+        throw_unless(11, total_supply == (100000000000000000 - 10000000000)) ;
+        return gas_used1 + gas_used2 + gas_used3;
+}
+
+int __test_delete_lend(){
+        init_data::set_default_initial_data();
+        int jetton_amount = 10000000000;
+        cell owner_address = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(5, 9) 
+                .store_uint(6, 5)
+        .end_cell();
+        cell from_address = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(5, 9) 
+                .store_uint(4, 5)
+        .end_cell();
+        var msg_body = begin_cell()
+                .store_uint(op::transfer_notification(), 32)
+                .store_uint(query::delete_lend(), 64)
+                .store_coins(jetton_amount)
+                .store_slice(from_address.begin_parse())
+                .store_slice(utils::get_null_slice())
+        .end_cell();
+         var msg = begin_cell()
+                .store_uint(0x10, 6) ;; we should not bounce here cause receiver can have uninitialized contract
+                .store_slice(owner_address.begin_parse())
+                .store_coins(1000000)
+                .store_uint(1, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .store_ref(msg_body)
+                .store_slice(msg_body.begin_parse())
+        .end_cell();
+        var (int gas_used1, _) = invoke_method(test_delete_lend, [msg, msg_body.begin_parse(), 1000000]);
+        return gas_used1;
+}
