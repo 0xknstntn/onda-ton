@@ -2,19 +2,14 @@
         (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
         int send_amount = (msg_value * 80 ) / 100;
         slice null_slice = utils::get_null_slice(); 
-        var (_, key_addr) = parse_std_addr(sender_address);
-        cell borrowCell = begin_cell()
-                .store_slice(sender_address)
-                .store_uint(now(), 64)
-                .store_grams(msg_value)
-        .end_cell();
-        borrow~udict_set_ref(256, key_addr, borrowCell);
         cell body = begin_cell()
                 .store_uint(op::transfer(), 32)
-                .store_uint(query_id, 64)
+                .store_uint(0, 64)
                 .store_grams(send_amount)
                 .store_slice(sender_address)
-                .store_slice(sender_address)
+                .store_slice(utils::null_addr())
+                .store_dict(utils::get_null_cell())
+                .store_grams(0)
         .end_cell();
         var msg = begin_cell()
                 .store_uint(0x18, 6)
@@ -25,7 +20,15 @@
                 .store_slice(begin_parse(body))
         .end_cell();
         send_raw_message(msg, 64);
+        var (_, key_addr) = parse_std_addr(sender_address);
+        cell borrowCell = begin_cell()
+                .store_slice(sender_address)
+                .store_uint(now(), 64)
+                .store_grams(msg_value)
+        .end_cell();
+        borrow~udict_set_ref(256, key_addr, borrowCell);
         storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
+        ;;return (msg, begin_parse(body)); ;; for test
         return ();
 }
 
@@ -34,8 +37,8 @@
         int amount = in_msg_body~load_grams();
         slice sender_address_0 = in_msg_body~load_msg_addr();
         var (_, key_addr) = parse_std_addr(sender_address_0);
-        slice borrowSlice = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
-        throw_unless(err::not_equal(), equal_slices(borrowSlice~load_msg_addr(), sender_address_0));
+        slice borrowSlice = (borrow.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        ;;throw_unless(err::not_equal(), equal_slices(borrowSlice~load_msg_addr(), sender_address_0));
         slice sender_address_1 = borrowSlice~load_msg_addr();
         throw_unless(err::not_equal(), equal_slices(sender_address_0, sender_address_1));
         int time = borrowSlice~load_uint(64);
@@ -45,7 +48,8 @@
         int borrow_time = (now() - time) / 86400;
         throw_if(err::small_days(), borrow_time <= 1);
         int plus_balance = ((((borrow_amount * 18 * 100) / 100) * borrow_time) / 365) / 100 + borrow_amount;
-        throw_if(err::wrong_amount(), plus_balance < amount);
+        ;;~dump(plus_balance);
+        throw_unless(err::wrong_amount(), plus_balance >= amount);
         var msg = begin_cell()
                 .store_uint(0x18, 6)
                 .store_slice(sender_address_0)
@@ -61,5 +65,6 @@
         .end_cell();
         borrow~udict_set_ref(256, key_addr, borrowCell);
         storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
+        ;;return (msg); ;; for test
         return ();
 }

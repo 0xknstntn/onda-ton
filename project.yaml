@@ -2,10 +2,11 @@ contract:
   data: fift/data.fif
   func:
     - func/main.func
-    - func/test/minter.func
-    - func/test/wallet.func
+    #- func/test/minter.func
+    #- func/test/wallet.func
   tests:
-    - tests/test-admin.func
+    #- tests/test-admin.func
     - tests/test-get-method.func
-    - tests/test-borrow.func
     - tests/test-lend.func
+    - tests/test-borrow.func
+    #- tests/test.func

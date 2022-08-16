@@ -9,6 +9,8 @@ cell utils::get_null_cell() {
         return begin_cell().end_cell();
 }
 
+slice utils::null_addr() asm "b{00} PUSHSLICE";
+
 slice utils::parse_sender_address (cell in_msg_full) {
         var cs = in_msg_full.begin_parse();
         int flags = cs~load_uint(4);

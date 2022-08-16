@@ -1,0 +1,84 @@
+#include "init-data.func";
+#include "../func/utils/codes.func";
+#include "../func/utils/utils.func";
+
+int __test_create_borrow(){
+        init_data::set_default_initial_data();
+        int jetton_amount = 10000000000;
+        slice from_address = "EQDO637bwRRWOxkOk_hzOm3R-RJ4-iqa_ep3VoAgMmVrs7ba"a;
+        slice owner_address = "EQB1BIFXrHRZL_SwW1dSaQ-6Gj51dGINydHgli0kJLdfIeYB"a;
+        slice jetton_wallet_otoken_address = "EQB_m-Vtz30EEaVSBB30GeJmrO-F4huVeGraUCD0KMjikXNw"a;
+        slice minter = "EQB3zt_w3eJPH_G_wh1vMz3uBMhfxrUc1BgXOI30dr76KAch"a;
+        slice xaddress = "EQAjHaxK0Ma__EYR9CN4YMQQEa7dgQRjXIFBNa4wduD2p-hJ"a;
+        var msg_body = begin_cell()
+                .store_uint(op::new_borrow(), 32)
+                .store_uint(0, 64)
+        .end_cell();
+         var msg = begin_cell()
+                .store_uint(0x18, 6) ;; we should not bounce here cause receiver can have uninitialized contract
+                .store_slice(owner_address)
+                .store_coins(0)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .store_ref(msg_body)
+                .store_slice(msg_body.begin_parse())
+        .end_cell();
+
+        var (gas_used1, stack) = invoke_method(test_create_borrow, [msg, msg_body.begin_parse(), jetton_amount]);
+        [cell msg_return, slice msg_return_body] = stack;
+
+        var (gas_used2, stack1) = invoke_method(get_borrow_info, [(begin_cell().store_slice(from_address).end_cell()).begin_parse()]);
+        [slice address, int time, int lend_amount] = stack1;
+        throw_unless(12, lend_amount == jetton_amount);
+        
+        init_data::set_default_initial_data_wallet();
+
+        var (gas_used3, stack1) = invoke_method(get_wallet_data, []);
+        [int total_supply, slice admin_address, slice jetton_master_address, cell jetton_wallet_code] = stack1;
+        throw_unless(10, total_supply == 100000000000000000);
+
+        var (gas_used2, _) = invoke_method(recv_any, [100000000000000, 1000000000000, msg_return, msg_return_body]);
+
+        var (gas_used4, stack2) = invoke_method(get_wallet_data, []);
+        [int total_supply, slice admin_address, slice jetton_master_address, cell jetton_wallet_code] = stack2;
+
+        throw_unless(11, (100000000000000000 - ((jetton_amount * 80) / 100)) == total_supply);
+
+        return gas_used1 + gas_used2 + gas_used3 + gas_used4;
+}
+
+int __test_delete_borrow(){
+        init_data::set_default_initial_data_for_delete_borrow();
+        int jetton_amount = 10000000000;
+        int day = 86400;
+        slice from_address = "EQDO637bwRRWOxkOk_hzOm3R-RJ4-iqa_ep3VoAgMmVrs7ba"a;
+        slice owner_address = "EQB1BIFXrHRZL_SwW1dSaQ-6Gj51dGINydHgli0kJLdfIeYB"a;
+        slice jetton_wallet_otoken_address = "EQB_m-Vtz30EEaVSBB30GeJmrO-F4huVeGraUCD0KMjikXNw"a;
+        slice minter = "EQB3zt_w3eJPH_G_wh1vMz3uBMhfxrUc1BgXOI30dr76KAch"a;
+        slice xaddress = "EQAjHaxK0Ma__EYR9CN4YMQQEa7dgQRjXIFBNa4wduD2p-hJ"a;
+        var msg_body = begin_cell()
+                .store_uint(0, 32) ;; for test
+                .store_uint(0, 64) ;; for test
+                .store_coins(jetton_amount)
+                .store_slice(from_address)
+        .end_cell();
+         var msg = begin_cell()
+                .store_uint(0x10, 6) ;; we should not bounce here cause receiver can have uninitialized contract
+                .store_slice(owner_address)
+                .store_coins(0)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .store_ref(msg_body)
+                .store_slice(msg_body.begin_parse())
+        .end_cell();
+        var (gas_used1, stack1) = invoke_method(get_borrow_info, [(begin_cell().store_slice(from_address).end_cell()).begin_parse()]);
+        [slice address, int time, int lend_amount] = stack1;
+        throw_unless(1, time == ((now() - (4 * 30 * day))));
+        throw_unless(2, lend_amount == jetton_amount);
+        var (int gas_used2, stack) = invoke_method(test_delete_borrow, [msg, msg_body.begin_parse(), 10591780821]);
+        [cell msg_return] = stack;
+        slice cs = msg_return.begin_parse();
+        cs~load_uint(6);
+        throw_unless(3, equal_slices(cs~load_msg_addr(), from_address));
+        throw_unless(4, cs~load_grams() == jetton_amount);
+
+        return gas_used1 + gas_used2;
+}
