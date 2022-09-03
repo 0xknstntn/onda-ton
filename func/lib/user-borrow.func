@@ -21,14 +21,31 @@
         .end_cell();
         send_raw_message(msg, 64);
         var (_, key_addr) = parse_std_addr(sender_address);
-        cell borrowCell = begin_cell()
-                .store_slice(sender_address)
-                .store_uint(now(), 64)
-                .store_grams(msg_value)
-        .end_cell();
-        borrow~udict_set_ref(256, key_addr, borrowCell);
-        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
-        ;;return (msg, begin_parse(body)); ;; for test
+        if(check_slice_for_empty?(borrow.udict_get_maybe_ref(256, key_addr))){
+                slice old_cell = (borrow.udict_get_maybe_ref(256, key_addr)).begin_parse();
+                old_cell~load_msg_addr();
+                int old_time = old_cell~load_uint(64);
+                int old_borrow_amount = old_cell~load_grams();
+                cell borrowCell = begin_cell()
+                        .store_slice(sender_address)
+                        ;;.store_uint(((now() - (4 * 30 * 86400))), 64) ;; for test
+                        .store_uint(old_time, 64)
+                        .store_grams(old_borrow_amount + msg_value)
+                .end_cell();
+                borrow~udict_set_ref(256, key_addr, borrowCell);
+                storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
+                ;;return (msg, begin_parse(body)); ;; for test
+        } else {
+                cell borrowCell = begin_cell()
+                        .store_slice(sender_address)
+                        ;;.store_uint(((now() - (4 * 30 * 86400))), 64) ;; for test
+                        .store_uint(now(), 64)
+                        .store_grams(msg_value)
+                .end_cell();
+                borrow~udict_set_ref(256, key_addr, borrowCell);
+                storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
+                ;;return (msg, begin_parse(body)); ;; for test
+        }
         return ();
 }
 
@@ -38,9 +55,7 @@
         slice sender_address_0 = in_msg_body~load_msg_addr();
         var (_, key_addr) = parse_std_addr(sender_address_0);
         slice borrowSlice = (borrow.udict_get_maybe_ref(256, key_addr)).begin_parse();
-        ;;throw_unless(err::not_equal(), equal_slices(borrowSlice~load_msg_addr(), sender_address_0));
-        slice sender_address_1 = borrowSlice~load_msg_addr();
-        throw_unless(err::not_equal(), equal_slices(sender_address_0, sender_address_1));
+        slice sender_address_1 = borrowSlice~load_msg_addr();       
         int time = borrowSlice~load_uint(64);
         throw_if(err::wrong_time(), time <= 0);
         int borrow_amount = borrowSlice~load_grams();
@@ -49,7 +64,7 @@
         throw_if(err::small_days(), borrow_time <= 1);
         int plus_balance = ((((borrow_amount * 18 * 100) / 100) * borrow_time) / 365) / 100 + borrow_amount;
         ;;~dump(plus_balance);
-        throw_unless(err::wrong_amount(), plus_balance >= amount);
+        throw_unless(err::wrong_amount(), amount >= plus_balance);
         var msg = begin_cell()
                 .store_uint(0x18, 6)
                 .store_slice(sender_address_0)
@@ -57,7 +72,7 @@
                 .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
                 .store_slice(utils::get_null_slice())
         .end_cell();
-        send_raw_message(msg, 64);
+        send_raw_message(msg, 3);
         cell borrowCell = begin_cell()
                 .store_slice(sender_address_0)
                 .store_uint(0, 64)

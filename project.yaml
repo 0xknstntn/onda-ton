@@ -6,7 +6,7 @@ contract:
     #- func/test/wallet.func
   tests:
     #- tests/test-admin.func
-    - tests/test-get-method.func
-    - tests/test-lend.func
-    - tests/test-borrow.func
-    #- tests/test.func
+    #- tests/test-get-method.func
+    #- tests/test-lend.func
+    #- tests/test-borrow.func
+    - tests/test.func

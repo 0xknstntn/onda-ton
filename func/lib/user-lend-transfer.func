@@ -1,4 +1,4 @@
-(cell, slice) lend::new_lend(slice in_msg_body, slice sender_address, int msg_value, int query_id) impure {
+() lend::new_lend(slice in_msg_body, slice sender_address, int msg_value, int query_id) impure {
         (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
         int input_amount = in_msg_body~load_grams();
         throw_unless(700, input_amount >= 1500000000);
@@ -26,18 +26,33 @@
         send_raw_message(msg, 64);
 
         var (_, key_addr) = parse_std_addr(to_address);
-        cell lendCell = begin_cell()
-                .store_slice(to_address)
-                .store_uint(now(), 64)
-                .store_grams(input_amount)
-        .end_cell();
-        lend~udict_set_ref(256, key_addr, lendCell);
-        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
-        return (msg, begin_parse(body)); ;;; for test
-        ;;return ();
+        if(check_slice_for_empty?(lend.udict_get_maybe_ref(256, key_addr))){
+                slice old_cell = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
+                old_cell~load_msg_addr();
+                old_cell~load_uint(64);
+                int old_lend_amount = old_cell~load_grams();
+                cell lendCell = begin_cell()
+                        .store_slice(to_address)
+                        .store_uint(now(), 64)
+                        .store_grams(old_lend_amount + input_amount)
+                .end_cell();
+                lend~udict_set_ref(256, key_addr, lendCell);
+                storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
+                ;;return (msg, begin_parse(body)); ;;; for test   
+        } else {
+                cell lendCell = begin_cell()
+                        .store_slice(to_address)
+                        .store_uint(now(), 64)
+                        .store_grams(input_amount)
+                .end_cell();
+                lend~udict_set_ref(256, key_addr, lendCell);
+                storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
+                ;;return (msg, begin_parse(body)); ;;; for test
+        }
+        return ();
 }
 
-(cell, slice) lend::delete_lend(slice in_msg_body, slice sender_address, int msg_value, int query_id) impure {
+() lend::delete_lend(slice in_msg_body, slice sender_address, int msg_value, int query_id) impure {
         (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend) = storage::load_data();
         int input_amount = in_msg_body~load_grams();
         slice to_address = in_msg_body~load_msg_addr(); 
@@ -50,6 +65,7 @@
         throw_unless(err::wrong_time(), time > 0);
         int lend_amount = lendSlice~load_grams();
         throw_unless(err::wrong_amount(), lend_amount > 0);
+        throw_unless(err::wrong_amount(), input_amount >= lend_amount);
         int lend_time = (now() - time) / 86400;
 
         throw_if(err::small_days(), lend_time <= 3);
@@ -84,7 +100,7 @@
         .end_cell();
         lend~udict_set_ref(256, key_addr, lendCell);
         storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, borrow, lend);
-        return (msg, begin_parse(body)); ;; for test
-        ;;return ();
+        ;;return (msg, begin_parse(body)); ;; for test
+        return ();
 
 }
