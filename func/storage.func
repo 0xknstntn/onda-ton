@@ -5,14 +5,15 @@
         cell borrow = ds~load_dict();
         cell lend = ds~load_dict();
         cell algebra = ds~load_uint(64);
-        return (owner_address, info~load_msg_addr(), info~load_msg_addr(), info~load_msg_addr(), borrow, lend, algebra);
+        return (owner_address, info~load_msg_addr(), info~load_msg_addr(), info~load_msg_addr(), info~load_msg_addr(), borrow, lend, algebra);
 }
 
-() storage::save_data(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, cell borrow, cell lend, cell algebra) impure inline {
+() storage::save_data(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) impure inline {
         cell info = begin_cell()
                 .store_slice(jetton_wallet_x_address)
                 .store_slice(minter_otoken_address)
                 .store_slice(jetton_wallet_otoken_address)
+                .store_slice(oracle)
         .end_cell();
         set_data(begin_cell().store_slice(owner_address).store_ref(info).store_dict(borrow).store_dict(lend).store_ref(algebra).end_cell());
 }
