@@ -1,0 +1,68 @@
+cell get_lend_info(slice address) method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        var (_, key_addr) = parse_std_addr(address);
+        return (lend.udict_get_maybe_ref(256, key_addr));
+}
+
+cell get_borrow_info(slice address) method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        var (_, key_addr) = parse_std_addr(address);
+        return (borrow.udict_get_maybe_ref(256, key_addr));
+}
+
+slice get_owner_address() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        return owner_address;
+}
+ 
+(slice) get_otoken_jetton_address() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        return jetton_wallet_otoken_address;
+}
+
+(slice) get_otoken_minter_address() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        return minter_otoken_address;
+}
+
+(slice) get_otoken_x_jetton_address() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        return jetton_wallet_x_address;
+}
+
+int getVariableBorrowAPY() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        int variableBorrowAPY = algebra::calculateVariableBorrowAPY(variableBorrowRate);
+        return variableBorrowAPY;
+}
+
+(int, int, int, int, int, int, int) getAlgebra() method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        return algebra::getConfiguration(algebra);
+}
+
+(int, int) test(int lend_amount, slice sender_address, int price) method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        {-int borrow_amount = algebra::getMaxBorrowValue(ltv, price, sender_address, lend_amount);
+        int hf = liquidation::calculateHF(lend_amount, liquidationThreshold, borrow_amount, price);
+        cell data = begin_cell().store_uint(2450000000, 64).end_cell();-}
+        return (0, 0);
+}
+
+int test1(int lend_amount, int price, int variableBorrowAPY) method_id {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        {-int variableBorrowAPY = algebra::calculateVariableBorrowAPY(variableBorrowRate);
+        int plus_balance = (borrow_amount + (
+                (
+                        (
+                                (borrow_amount) * (variableBorrowAPY) * (borrow_time * 1000000000)
+                        ) / (31536000 * 1000000000)
+                ) / 1000000000
+                )
+        );-}
+        int plus_balance =  (((((lend_amount) * 1000000000) / price) * ltv) / 100);
+        return plus_balance;
+}

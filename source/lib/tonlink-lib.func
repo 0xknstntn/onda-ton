@@ -1,0 +1,38 @@
+{-
+        @title: ton-link-lib
+        @version: v1.0
+        @author: Konstantin Klyuchnikov
+-}
+
+int equal_slices (slice a, slice b) asm "SDEQ";
+
+int tonlink::is_oracle(slice sender_address, slice oracle_address) impure {
+        if(equal_slices(sender_address, oracle_address)){ return -1; }
+        return 0;
+}
+
+() tonlink::send_request(slice sender_address, int msg_value, slice orig_body, slice oracle_address) impure {
+        cell msg_body = begin_cell()
+                .store_slice(sender_address)
+                .store_grams(msg_value)
+                .store_ref(begin_cell().store_slice(orig_body).end_cell())
+        .end_cell();
+        var msg = begin_cell()
+                .store_uint(0x18, 6)
+                .store_slice(oracle_address)
+                .store_grams(0)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .store_ref(msg_body)
+        .end_cell();
+        send_raw_message(msg, 64);
+        return ();
+}
+
+(slice, int, int, int, slice) tonlink::parse_response(slice in_msg_body) impure {
+        slice who_send = in_msg_body~load_msg_addr();
+        int time = in_msg_body~load_uint(64);
+        int value = in_msg_body~load_grams();
+        int price = in_msg_body~load_uint(64);
+        slice all_msg = (in_msg_body~load_ref()).begin_parse();
+        return (who_send, time, value, price, all_msg);
+}

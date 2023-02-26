@@ -1,0 +1,129 @@
+(int, int, int, int, int, int, int) algebra::getConfiguration(cell algebra) inline {
+        slice ds = algebra.begin_parse();
+        return (ds~load_uint(64), ds~load_uint(64), ds~load_uint(64), ds~load_uint(64), ds~load_uint(64), ds~load_uint(64), ds~load_uint(64));
+}
+
+int algebra::pow(int b, int e) inline_ref {
+        int v = 1;
+        while(e != 0) {
+                if((e & 1) != 0) {
+                        v *= b;
+                }
+                b *= b;
+                e >>= 1;
+        }
+        return v;
+}
+
+cell algebra::pack_conf(int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) impure {
+        return (begin_cell()
+                .store_uint(ltv, 64)
+                .store_uint(liquidationThreshold, 64)
+                .store_uint(liquidationBonus, 64)
+                .store_uint(borrowingEnabled, 64)
+                .store_uint(isActive, 64)
+                .store_uint(liquidityRate, 64)
+                .store_uint(variableBorrowRate, 64)
+        .end_cell());
+} 
+
+int algebra::calculateDepositAPY(int liquidityRate) {
+        ;;int depositAPR = liquidityRate / 1000000000000000000000000000;
+        ;;int depositAPY = ((algebra::pow((1 + (depositAPR / 31536000)), 31536000)) - 1) * 1000000000;
+        return liquidityRate;
+}
+
+int algebra::calculateVariableBorrowAPY(int variableBorrowRate) {
+        ;;int variableBorrowAPR = variableBorrowRate / 1000000000000000000000000000;
+        ;;int variableBorrowAPY = ((algebra::pow((1 + (variableBorrowAPR / 31536000)), 31536000)) - 1) * 1000000000;
+        return variableBorrowRate;
+}
+
+int algebra::getMaxBorrowValueForNativeToken(int ltv, int price, slice sender_address, int lend_amount) impure {
+        return ((((lend_amount * price) / 1000000000) * ltv) / 100);
+}
+
+int algebra::getMaxBorrowValueForCustomToken(int ltv, int price, slice sender_address, int lend_amount) impure {
+        return (((((lend_amount) * 1000000000) / price) * ltv) / 100);
+}
+
+() algebra::change_ltv(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        int new = msg~load_uint(64);
+        cell new_algebra = algebra::pack_conf(new, liquidationThreshold, liquidationBonus, borrowingEnabled, isActive, liquidityRate, variableBorrowRate);
+        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, new_algebra);
+        return ();
+}
+
+() algebra::change_liquidationThreshold(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        int new = msg~load_uint(64);
+        cell new_algebra = algebra::pack_conf(ltv,new,liquidationBonus,borrowingEnabled,isActive,liquidityRate, variableBorrowRate);
+        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, new_algebra);
+        return ();
+}
+
+() algebra::change_liquidationBonus(slice msg, slice sender_address) impure {
+	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        int new = msg~load_uint(64);
+        cell new_algebra = algebra::pack_conf(ltv,liquidationThreshold,new,borrowingEnabled,isActive,liquidityRate, variableBorrowRate);
+        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, new_algebra);
+        return ();
+}
+
+() algebra::change_borrowingEnabled(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        int new = msg~load_uint(64);
+        cell new_algebra = algebra::pack_conf(ltv,liquidationThreshold,liquidationBonus,new,isActive,liquidityRate, variableBorrowRate);
+        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, new_algebra);
+        return ();
+}
+
+() algebra::change_isActive(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        int new = msg~load_uint(64);
+        cell new_algebra = algebra::pack_conf(ltv,liquidationThreshold,liquidationBonus,borrowingEnabled,new, liquidityRate, variableBorrowRate);
+        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, new_algebra);
+        return ();
+}
+
+() algebra::change_liquidityRate(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        int new = msg~load_uint(256);
+        cell new_algebra = algebra::pack_conf(ltv,liquidationThreshold,liquidationBonus,borrowingEnabled,isActive, new, variableBorrowRate);
+        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, new_algebra);
+        return ();
+}
+
+() algebra::change_variableBorrowRate(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        int new = msg~load_uint(256);
+        cell new_algebra = algebra::pack_conf(ltv,liquidationThreshold,liquidationBonus,borrowingEnabled,isActive,liquidityRate, new);
+        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, new_algebra);
+        return ();
+}
+
+() algebra::newConfiguration(slice sender_address, int query, slice msg) impure {
+        if(query == 1){ algebra::change_ltv(msg,sender_address); return (); }
+        if(query == 2){ algebra::change_liquidationThreshold(msg,sender_address); return (); }
+        if(query == 3){ algebra::change_liquidationBonus(msg,sender_address); return (); }
+        if(query == 4){ algebra::change_borrowingEnabled(msg,sender_address); return (); }
+        if(query == 5){ algebra::change_isActive(msg,sender_address); return (); }
+        if(query == 6){ algebra::change_liquidityRate(msg,sender_address); return (); }
+        if(query == 7){ algebra::change_variableBorrowRate(msg,sender_address); return (); }
+        return ();
+}
