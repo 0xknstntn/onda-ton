@@ -4,7 +4,7 @@
   "description": "Core smart contracts of Onda Lending",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter mochawesome -r ts-node/register 'tests/**/*.ts'",
+    "test": "mocha --reporter mochawesome -r ts-node/register 'tests/**/**/*.ts'",
     "build": "./scripts/build.sh",
     "run": "npm run build & npm run test"
   },

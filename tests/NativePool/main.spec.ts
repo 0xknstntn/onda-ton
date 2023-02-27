@@ -10,7 +10,7 @@ import {
 } from './transaction';
 
 import { packOracleResponse } from "./helper";
-describe("onda-stablepool tests", async () => {
+describe("onda-nativePool tests", async () => {
         let blockchain = await Blockchain.create();
         let ondaContract: OpenedContract<Onda>;
 
@@ -43,14 +43,14 @@ describe("onda-stablepool tests", async () => {
                 .storeUint(variableBorrowRate, 64)
         .endCell();
 
-        describe("onda-stablepool main tests", () => {
+        describe("onda-nativePool main tests", () => {
                 beforeEach(async () =>  {
-                        const ondaCode = Cell.fromBoc(fs.readFileSync("./output/onda.cell"))[0]; // compilation output from tutorial 2
+                        const ondaCode = Cell.fromBoc(fs.readFileSync("./output/pool/onda-nativePool.cell"))[0]; // compilation output from tutorial 2
                         const onda = Onda.createForDeploy(ondaCode, jetton_wallet_x_address.address, minter_otoken_address.address, jetton_wallet_otoken_address.address, oracle.address, owner_address.address, configuration);
                         ondaContract = blockchain.openContract(onda);
                         await ondaContract.sendDeploy(deployer.getSender());
                 });
-                it("onda-stablepool newLendNativeToken",async () => {
+                it("onda-nativePool newLendNativeToken",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a1, 32)
                                 .storeUint(0, 64)
@@ -62,13 +62,13 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 })
 
-                it("onda-stablepool check lend info",async () => {
+                it("onda-nativePool check lend info",async () => {
                         let data = await ondaContract.getLendInfo(user.address);
                         var res = await ondaContract.parseLendSlice(data);
                         //console.log(res);
                 });
 
-                it("onda-stablepool newBorrow using native token",async () => {
+                it("onda-nativePool newBorrow using native token",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a0, 32)
                                 .storeUint(0, 64)
@@ -80,13 +80,13 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 })
 
-                it("onda-stablepool check borrow info",async () => {
+                it("onda-nativePool check borrow info",async () => {
                         let data = await ondaContract.getBorrowInfo(user.address);
                         var res = await ondaContract.parseBorrowSlice(data);
                         //console.log(res);
                 });
 
-                it("onda-stablepool trying withdraw when borrow not end", async () => {
+                it("onda-nativePool trying withdraw when borrow not end", async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x15f90, 64)
@@ -100,7 +100,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(true)
                 });
 
-                it("onda-stablepool trying newLendNativeToken when user alredy lend",async () => {
+                it("onda-nativePool trying newLendNativeToken when user alredy lend",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a1, 32)
                                 .storeUint(0, 64)
@@ -112,7 +112,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(true)
                 });
 
-                it("onda-stablepool deleteBorrowCustomToken when hf < 100",async () => {
+                it("onda-nativePool deleteBorrowCustomToken when hf < 100",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x1adb0, 64)
@@ -126,13 +126,13 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(true)
                 });
 
-                it("onda-stablepool check borrow info",async () => {
+                it("onda-nativePool check borrow info",async () => {
                         let data = await ondaContract.getBorrowInfo(user.address);
                         var res = await ondaContract.parseBorrowSlice(data);
                         expect(res.typeBorrowAmount).to.equal(1)
                         expect(res.borrowValue).to.equal(18375000000n)
                 });                
-                it("onda-stablepool deleteBorrowCustomToken when hf > 100",async () => {
+                it("onda-nativePool deleteBorrowCustomToken when hf > 100",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x1adb0, 64)
@@ -146,7 +146,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 });
 
-                it("onda-stablepool check lend info",async () => {
+                it("onda-nativePool check lend info",async () => {
                         let data = await ondaContract.getLendInfo(user.address);
                         var res = await ondaContract.parseLendSlice(data);
                         expect(res.typeLendAmount).to.equal(2)
@@ -154,7 +154,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.lendValue).to.equal(10000000000n)
                 });
 
-                it("onda-stablepool withdraw", async () => {
+                it("onda-nativePool withdraw", async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x15f90, 64)
@@ -168,7 +168,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 });
 
-                it("onda-stablepool newLendCustomToken",async () => {
+                it("onda-nativePool newLendCustomToken",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x15ba8, 64)
@@ -182,7 +182,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 });
 
-                it("onda-stablepool check lend info",async () => {
+                it("onda-nativePool check lend info",async () => {
                         let data = await ondaContract.getLendInfo(user.address);
                         var res = await ondaContract.parseLendSlice(data);
                         expect(res.typeLendAmount).to.equal(1)
@@ -190,7 +190,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.lendValue).to.equal(10000000000n)
                 });
 
-                it("onda-stablepool newBorrow using custom token",async () => {
+                it("onda-nativePool newBorrow using custom token",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a0, 32)
                                 .storeUint(0, 64)
@@ -201,13 +201,13 @@ describe("onda-stablepool tests", async () => {
                         expect(res.exitCode).to.equal(0)
                         expect(res.aborted).to.equal(false)
                 });
-                it("onda-stablepool check borrow info",async () => {
+                it("onda-nativePool check borrow info",async () => {
                         let data = await ondaContract.getBorrowInfo(user.address);
                         var res = await ondaContract.parseBorrowSlice(data);
                         expect(res.typeBorrowAmount).to.equal(2)
                         expect(res.borrowValue).to.equal(3061224489n)
                 });  
-                it("onda-stablepool liquidationCallNativeToken when hf > 100",async () => {
+                it("onda-nativePool liquidationCallNativeToken when hf > 100",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a3, 32)
                                 .storeUint(0, 64)
@@ -219,7 +219,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.exitCode).to.equal(585)
                         expect(res.aborted).to.equal(true)
                 }); 
-                it("onda-stablepool liquidationCallNativeToken when hf < 100",async () => {
+                it("onda-nativePool liquidationCallNativeToken when hf < 100",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a3, 32)
                                 .storeUint(0, 64)
@@ -232,7 +232,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 });
 
-                it("onda-stablepool check lend info",async () => {
+                it("onda-nativePool check lend info",async () => {
                         var data = await ondaContract.getLendInfo(user.address);
                         var res = await ondaContract.parseLendSlice(data)
                         expect(res.typeLendAmount).to.equal(0)
@@ -240,7 +240,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.lendValue).to.equal(0n)
                 });
 
-                it("onda-stablepool check borrow info",async () => {
+                it("onda-nativePool check borrow info",async () => {
                         var data = await ondaContract.getBorrowInfo(user.address);
                         var res = await ondaContract.parseBorrowSlice(data)
                         expect(res.typeBorrowAmount).to.equal(0)
@@ -248,7 +248,7 @@ describe("onda-stablepool tests", async () => {
                 });
 
 
-                it("onda-stablepool newLendNativeToken",async () => {
+                it("onda-nativePool newLendNativeToken",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a1, 32)
                                 .storeUint(0, 64)
@@ -260,7 +260,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 })
 
-                it("onda-stablepool newBorrow using native token",async () => {
+                it("onda-nativePool newBorrow using native token",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a0, 32)
                                 .storeUint(0, 64)
@@ -272,13 +272,13 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 })
 
-                it("onda-stablepool check borrow info",async () => {
+                it("onda-nativePool check borrow info",async () => {
                         let data = await ondaContract.getBorrowInfo(user.address);
                         var res = await ondaContract.parseBorrowSlice(data);
                         //console.log(res);
                 });
 
-                it("onda-stablepool liquidationCallCustomToken when hf > 100",async () => {
+                it("onda-nativePool liquidationCallCustomToken when hf > 100",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x1abb0, 64)
@@ -293,7 +293,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(true)
                 }); 
 
-                it("onda-stablepool liquidationCallCustomToken when hf < 100",async () => {
+                it("onda-nativePool liquidationCallCustomToken when hf < 100",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x1abb0, 64)
@@ -308,7 +308,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 });
 
-                it("onda-stablepool check lend info",async () => {
+                it("onda-nativePool check lend info",async () => {
                         var data = await ondaContract.getLendInfo(user.address);
                         var res = await ondaContract.parseLendSlice(data)
                         expect(res.typeLendAmount).to.equal(0)
@@ -316,14 +316,14 @@ describe("onda-stablepool tests", async () => {
                         expect(res.lendValue).to.equal(0n)
                 });
 
-                it("onda-stablepool check borrow info",async () => {
+                it("onda-nativePool check borrow info",async () => {
                         var data = await ondaContract.getBorrowInfo(user.address);
                         var res = await ondaContract.parseBorrowSlice(data)
                         expect(res.typeBorrowAmount).to.equal(0)
                         expect(res.borrowValue).to.equal(0n)
                 });
 
-                it("onda-stablepool newLendCustomToken",async () => {
+                it("onda-nativePool newLendCustomToken",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x15ba8, 64)
@@ -337,7 +337,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 });
 
-                it("onda-stablepool check lend info",async () => {
+                it("onda-nativePool check lend info",async () => {
                         let data = await ondaContract.getLendInfo(user.address);
                         var res = await ondaContract.parseLendSlice(data);
                         expect(res.typeLendAmount).to.equal(1)
@@ -345,7 +345,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.lendValue).to.equal(10000000000n)
                 });
 
-                it("onda-stablepool newBorrow using custom token",async () => {
+                it("onda-nativePool newBorrow using custom token",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a0, 32)
                                 .storeUint(0, 64)
@@ -357,13 +357,13 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 });
 
-                it("onda-stablepool check borrow info",async () => {
+                it("onda-nativePool check borrow info",async () => {
                         var data = await ondaContract.getBorrowInfo(user.address);
                         var res = await ondaContract.parseBorrowSlice(data)
                         //console.log(res)
                 });
 
-                it("onda-stablepool deleteBorrowNativeToken when hf < 100",async () => {
+                it("onda-nativePool deleteBorrowNativeToken when hf < 100",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a2, 32)
                                 .storeUint(0, 64)
@@ -375,7 +375,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(true)
                 });
 
-                it("onda-stablepool deleteBorrowNativeToken when hf > 100",async () => {
+                it("onda-nativePool deleteBorrowNativeToken when hf > 100",async () => {
                         const origBody = beginCell()
                                 .storeUint(0x186a2, 32)
                                 .storeUint(0, 64)
@@ -387,7 +387,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.aborted).to.equal(false)
                 });
 
-                it("onda-stablepool check lend info",async () => {
+                it("onda-nativePool check lend info",async () => {
                         let data = await ondaContract.getLendInfo(user.address);
                         var res = await ondaContract.parseLendSlice(data);
                         expect(res.typeLendAmount).to.equal(1)
@@ -395,7 +395,7 @@ describe("onda-stablepool tests", async () => {
                         expect(res.lendValue).to.equal(10000000000n)
                 });
 
-                it("onda-stablepool withdraw", async () => {
+                it("onda-nativePool withdraw", async () => {
                         const origBody = beginCell()
                                 .storeUint(0x7362d09c, 32)
                                 .storeUint(0x15f90, 64)
