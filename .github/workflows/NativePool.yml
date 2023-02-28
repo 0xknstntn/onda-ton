@@ -1,0 +1,22 @@
+name: NativeLendingPool Test
+run-name: Testing out NativeLendingPool
+on: [push]
+jobs:
+  NativeLendingPool-Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.14
+      - name: Installing dependencies and packages
+        run: |
+          npm install
+      - name: Compile contracts
+        run: |
+          npm run build
+      - name: Run tests
+        run: |
+          npm run test
+
+      
