@@ -1,0 +1,1715 @@
+PROGRAM{
+  DECLPROC storage::load_data
+  DECLPROC storage::save_data
+  DECLPROC utils::get_null_slice
+  DECLPROC utils::get_null_cell
+  DECLPROC utils::parse_sender_address
+  DECLPROC admin::change_admin
+  DECLPROC admin::change_wallet_x
+  DECLPROC admin::change_minter
+  DECLPROC admin::change_wallet_o
+  DECLPROC borrow::newBorrow
+  DECLPROC algebra::getConfiguration
+  DECLPROC algebra::getMaxBorrowValueForCustomToken
+  DECLPROC liquidation::calculateHFForCustomToken
+  DECLPROC algebra::getMaxBorrowValueForNativeToken
+  DECLPROC liquidation::calculateHFForNativeToken
+  DECLPROC borrow::deleteBorrowNativeToken
+  DECLPROC algebra::calculateVariableBorrowAPY
+  DECLPROC borrow::deleteBorrowCustomToken
+  DECLPROC lend::newLendCustomToken
+  DECLPROC lend::newLendNativeToken
+  DECLPROC lend::deleteLend
+  DECLPROC algebra::calculateDepositAPY
+  DECLPROC test::change_admin_minter
+  93376 DECLMETHOD get_lend_info
+  110895 DECLMETHOD get_borrow_info
+  114619 DECLMETHOD get_owner_address
+  92262 DECLMETHOD get_otoken_jetton_address
+  85674 DECLMETHOD get_otoken_minter_address
+  76399 DECLMETHOD get_otoken_x_jetton_address
+  88232 DECLMETHOD getVariableBorrowAPY
+  76347 DECLMETHOD getAlgebra
+  105222 DECLMETHOD test
+  70304 DECLMETHOD test1
+  DECLPROC algebra::pow
+  DECLPROC algebra::pack_conf
+  DECLPROC algebra::change_ltv
+  DECLPROC algebra::change_liquidationThreshold
+  DECLPROC algebra::change_liquidationBonus
+  DECLPROC algebra::change_borrowingEnabled
+  DECLPROC algebra::change_isActive
+  DECLPROC algebra::change_liquidityRate
+  DECLPROC algebra::change_variableBorrowRate
+  DECLPROC algebra::newConfiguration
+  DECLPROC liquidation::calculateLiquidationAmount
+  DECLPROC liquidation::liquidationCallNativeToken
+  DECLPROC liquidation::liquidationCallCustomToken
+  DECLPROC tonlink::is_oracle
+  DECLPROC tonlink::send_request
+  DECLPROC tonlink::parse_response
+  DECLPROC recv_internal
+  storage::load_data PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDMSGADDR
+    LDMSGADDR
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    s0 s3 XCHG
+    LDMSGADDR
+    LDMSGADDR
+    LDMSGADDR
+    DROP
+    s6 s1 s4 XCHG3
+    s0 s3 s3 XCHG3
+    s0 s5 XCHG
+  }>
+  storage::save_data PROCINLINE:<{
+    NEWC
+    s0 s7 XCHG2
+    STSLICER
+    s0 s5 XCHG2
+    STSLICER
+    s0 s3 XCHG2
+    STSLICER
+    ENDC
+    NEWC
+    s0 s6 XCHG2
+    STSLICER
+    SWAP
+    STSLICER
+    s1 s4 XCHG
+    STREF
+    s1 s3 XCHG
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    STREF
+    ENDC
+    c4 POP
+  }>
+  utils::get_null_slice PROC:<{
+    NEWC
+    ENDC
+    CTOS
+  }>
+  utils::get_null_cell PROC:<{
+    NEWC
+    ENDC
+  }>
+  utils::parse_sender_address PROC:<{
+    CTOS
+    4 LDU
+    NIP
+    LDMSGADDR
+    DROP
+  }>
+  admin::change_admin PROC:<{
+    storage::load_data INLINECALLDICT
+    7000 PUSHINT
+    s8 s9 XCHG2
+    SDEQ
+    s1 s8 XCHG
+    THROWANYIFNOT
+    s0 s7 XCHG
+    LDMSGADDR
+    DROP
+    s0 s7 XCHG
+    2 5 BLKSWAP
+    storage::save_data INLINECALLDICT
+  }>
+  admin::change_wallet_x PROC:<{
+    storage::load_data INLINECALLDICT
+    s6 POP
+    7000 PUSHINT
+    s7 s8 PUXC
+    SDEQ
+    s1 s8 XCHG
+    THROWANYIFNOT
+    s0 s7 XCHG
+    LDMSGADDR
+    DROP
+    s5 s7 XCHG
+    s0 s6 XCHG
+    s3 s5 XCHG
+    s4 s0 s3 XCHG3
+    s0 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  admin::change_minter PROC:<{
+    storage::load_data INLINECALLDICT
+    s5 POP
+    7000 PUSHINT
+    s7 s8 PUXC
+    SDEQ
+    s1 s8 XCHG
+    THROWANYIFNOT
+    s0 s7 XCHG
+    LDMSGADDR
+    DROP
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s5 s1 s5 XCHG3
+    s4 s4 XCHG2
+    s0 s3 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  admin::change_wallet_o PROC:<{
+    storage::load_data INLINECALLDICT
+    s4 POP
+    7000 PUSHINT
+    s7 s8 PUXC
+    SDEQ
+    s1 s8 XCHG
+    THROWANYIFNOT
+    s0 s7 XCHG
+    LDMSGADDR
+    DROP
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s4 XCHG2
+    s3 s1 s3 XCHG3
+    storage::save_data INLINECALLDICT
+  }>
+  borrow::newBorrow PROC:<{
+    s2 POP
+    storage::load_data INLINECALLDICT
+    s8 PUSH
+    REWRITESTDADDR
+    NIP
+    s0 s2 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s2 PUSH
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    2 LDU
+    NIP
+    LDMSGADDR
+    NIP
+    64 LDU
+    NIP
+    LDGRAMS
+    DROP
+    s2 PUSH
+    algebra::getConfiguration INLINECALLDICT
+    5 BLKDROP
+    0 PUSHINT
+    s0 s4 PUSH2
+    1 EQINT
+    IF:<{
+      2DROP
+      s1 s13 s12 PUSH3
+      s5 PUSH
+      algebra::getMaxBorrowValueForCustomToken CALLDICT
+      s3 s1 s0 PUSH3
+      17 s() PUSH
+      liquidation::calculateHFForCustomToken CALLDICT
+      105 GTINT
+      585 THROWIFNOT
+      0 PUSHINT
+      24 PUSHINT
+      NEWC
+      6 STU
+      s15 PUSH
+      STSLICER
+      s2 PUSH
+      STGRAMS
+      107 STU
+      ENDC
+      3 PUSHINT
+      SENDRAWMSG
+      2 PUSHINT
+      SWAP
+    }>
+    s5 PUSH
+    2 EQINT
+    IF:<{
+      2DROP
+      s1 s13 s12 XCPU2
+      s4 PUSH
+      algebra::getMaxBorrowValueForNativeToken CALLDICT
+      s2 s1 s1 PUXCPU
+      s15 PUSH
+      liquidation::calculateHFForNativeToken CALLDICT
+      105 GTINT
+      585 THROWIFNOT
+      NEWDICT
+      0 PUSHINT
+      0xf8a7ea5 PUSHINT
+      NEWC
+      32 STU
+      64 STU
+      s2 PUSH
+      STGRAMS
+      s13 PUSH
+      STSLICER
+      b{00} PUSHSLICE
+      STSLICER
+      STDICT
+      0 PUSHINT
+      STGRAMS
+      ENDC
+      0 PUSHINT
+      24 PUSHINT
+      NEWC
+      6 STU
+      s12 PUSH
+      STSLICER
+      OVER
+      STGRAMS
+      107 STU
+      STREF
+      ENDC
+      64 PUSHINT
+      SENDRAWMSG
+      1 PUSHINT
+      SWAP
+    }>ELSE<{
+      2 2 BLKDROP2
+    }>
+    s12 PUSH
+    REWRITESTDADDR
+    NIP
+    NOW
+    s0 s3 XCHG
+    NEWC
+    2 STU
+    s14 PUSH
+    STSLICER
+    s1 s3 XCHG
+    64 STU
+    SWAP
+    STGRAMS
+    s1 s13 XCHG
+    64 STU
+    ENDC
+    s0 s12 s5 XCPUXC
+    8 PUSHPOW2
+    DICTUSETREF
+    NOW
+    2 PUSHINT
+    s0 s3 XCHG
+    NEWC
+    2 STU
+    s1 s3 XCHG
+    2 STU
+    s0 s11 XCHG2
+    STSLICER
+    64 STU
+    s0 s3 XCHG2
+    STGRAMS
+    ENDC
+    s0 s9 s9 XCHG3
+    8 PUSHPOW2
+    DICTUSETREF
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s0 s3 XCHG3
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::getConfiguration PROCINLINE:<{
+    CTOS
+    64 LDU
+    64 LDU
+    64 LDU
+    64 LDU
+    64 LDU
+    64 LDU
+    64 LDU
+    DROP
+  }>
+  algebra::getMaxBorrowValueForCustomToken PROC:<{
+    NIP
+    1000000000 PUSHINT
+    MUL
+    SWAP
+    DIV
+    SWAP
+    MUL
+    100 PUSHINT
+    DIV
+  }>
+  liquidation::calculateHFForCustomToken PROC:<{
+    s0 s3 XCHG
+    1000000000 PUSHINT
+    MUL
+    s0 s3 XCHG2
+    DIV
+    SWAP
+    MUL
+    1000000000 PUSHINT
+    MUL
+    SWAP
+    DIV
+    1000000000 PUSHINT
+    DIV
+  }>
+  algebra::getMaxBorrowValueForNativeToken PROC:<{
+    NIP
+    SWAP
+    MUL
+    1000000000 PUSHINT
+    DIV
+    SWAP
+    MUL
+    100 PUSHINT
+    DIV
+  }>
+  liquidation::calculateHFForNativeToken PROC:<{
+    s1 s3 XCHG
+    MUL
+    1000000000 PUSHINT
+    DIV
+    SWAP
+    MUL
+    1000000000 PUSHINT
+    MUL
+    SWAP
+    DIV
+    1000000000 PUSHINT
+    DIV
+  }>
+  borrow::deleteBorrowNativeToken PROC:<{
+    s3 POP
+    storage::load_data INLINECALLDICT
+    DUP
+    algebra::getConfiguration INLINECALLDICT
+    s6 POP
+    4 BLKDROP
+    s10 PUSH
+    REWRITESTDADDR
+    NIP
+    s0 s5 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s0 s4 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s0 s4 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    2 LDU
+    NIP
+    LDMSGADDR
+    NIP
+    64 LDU
+    NIP
+    LDGRAMS
+    DROP
+    s2 s7 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    NIP
+    LDMSGADDR
+    NIP
+    64 LDU
+    LDGRAMS
+    DROP
+    7004 PUSHINT
+    OVER
+    1 LESSINT
+    THROWANYIF
+    s2 s5 s(-1) PUXC2
+    s6 s(-1) PUXC
+    s0 19 s() XCHG
+    liquidation::calculateHFForCustomToken CALLDICT
+    105 GTINT
+    585 THROWIFNOT
+    NOW
+    SWAP
+    s0 16 s() XCHG
+    SUB
+    DUP
+    0 EQINT
+    IF:<{
+      INC
+    }>
+    7002 PUSHINT
+    OVER
+    0 EQINT
+    THROWANYIF
+    s0 s4 XCHG
+    algebra::calculateVariableBorrowAPY CALLDICT
+    s3 s(-1) PUXC
+    MUL
+    s0 s4 XCHG
+    1000000000 PUSHINT
+    MUL
+    s1 s4 XCHG
+    MUL
+    31536000000000000 PUSHINT
+    DIV
+    1000000000 PUSHINT
+    DIV
+    s1 s2 XCHG
+    ADD
+    7007 PUSHINT
+    s13 s13 XCHG2
+    GEQ
+    s1 s12 XCHG
+    THROWANYIFNOT
+    s10 s3 PUXC
+    8 PUSHPOW2
+    DICTUDEL
+    DROP
+    NOW
+    1 PUSHINT
+    s0 s5 XCHG
+    NEWC
+    2 STU
+    s1 s5 XCHG
+    2 STU
+    s0 s10 XCHG2
+    STSLICER
+    s1 s3 XCHG
+    64 STU
+    s0 s10 XCHG2
+    STGRAMS
+    ENDC
+    s0 s8 s9 XCHG3
+    8 PUSHPOW2
+    DICTUSETREF
+    s4 s7 XCHG
+    s3 s6 XCHG
+    s5 s0 s4 XCHG3
+    s0 s3 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::calculateVariableBorrowAPY PROC:<{
+  }>
+  borrow::deleteBorrowCustomToken PROC:<{
+    storage::load_data INLINECALLDICT
+    DUP
+    algebra::getConfiguration INLINECALLDICT
+    s6 POP
+    4 BLKDROP
+    s0 s11 XCHG
+    LDGRAMS
+    LDMSGADDR
+    DROP
+    DUP
+    REWRITESTDADDR
+    NIP
+    s0 s6 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s0 s5 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s0 s5 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    2 LDU
+    NIP
+    LDMSGADDR
+    NIP
+    64 LDU
+    NIP
+    LDGRAMS
+    DROP
+    s2 s8 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    NIP
+    LDMSGADDR
+    NIP
+    64 LDU
+    LDGRAMS
+    DROP
+    7004 PUSHINT
+    OVER
+    1 LESSINT
+    THROWANYIF
+    s2 PUSH
+    s0 s2 XCHG
+    s1 18 s() XCHG
+    18 s() PUSH
+    SWAP
+    s0 18 s() XCHG
+    liquidation::calculateHFForNativeToken CALLDICT
+    105 GTINT
+    585 THROWIFNOT
+    NOW
+    s0 s15 XCHG2
+    SUB
+    DUP
+    0 EQINT
+    IF:<{
+      INC
+    }>
+    7002 PUSHINT
+    OVER
+    0 EQINT
+    THROWANYIF
+    s0 s5 XCHG
+    algebra::calculateVariableBorrowAPY CALLDICT
+    s15 s(-1) PUXC
+    MUL
+    s0 s5 XCHG
+    1000000000 PUSHINT
+    MUL
+    s1 s5 XCHG
+    MUL
+    31536000000000000 PUSHINT
+    DIV
+    1000000000 PUSHINT
+    DIV
+    s1 s14 XCHG
+    ADD
+    7007 PUSHINT
+    s3 s3 XCHG2
+    GEQ
+    s1 s2 XCHG
+    THROWANYIFNOT
+    s11 s4 PUXC
+    8 PUSHPOW2
+    DICTUDEL
+    DROP
+    NOW
+    1 PUSHINT
+    s0 s3 XCHG
+    NEWC
+    2 STU
+    s1 s3 XCHG
+    2 STU
+    s0 s5 XCHG2
+    STSLICER
+    64 STU
+    s0 s9 XCHG2
+    STGRAMS
+    ENDC
+    s0 s9 s9 XCHG3
+    8 PUSHPOW2
+    DICTUSETREF
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s0 s3 XCHG3
+    s0 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  lend::newLendCustomToken PROC:<{
+    DROP
+    storage::load_data INLINECALLDICT
+    s0 s8 XCHG
+    LDGRAMS
+    LDMSGADDR
+    DROP
+    DUP
+    REWRITESTDADDR
+    NIP
+    s0 s3 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    83 THROWIF
+    NEWDICT
+    0 PUSHINT
+    0xf8a7ea5 PUSHINT
+    NEWC
+    32 STU
+    64 STU
+    s4 PUSH
+    STGRAMS
+    s3 PUSH
+    STSLICER
+    b{00} PUSHSLICE
+    STSLICER
+    STDICT
+    0 PUSHINT
+    STGRAMS
+    ENDC
+    DUP
+    CTOS
+    SBITS
+    10 PUSHPOW2DEC
+    LEQ
+    701 THROWIFNOT
+    0 PUSHINT
+    24 PUSHINT
+    NEWC
+    6 STU
+    s9 PUSH
+    STSLICER
+    OVER
+    STGRAMS
+    107 STU
+    s1 s(-1) PUXC
+    STREF
+    SWAP
+    CTOS
+    STSLICER
+    ENDC
+    64 PUSHINT
+    SENDRAWMSG
+    NOW
+    1 PUSHINT
+    DUP
+    NEWC
+    2 STU
+    2 STU
+    s0 s3 XCHG2
+    STSLICER
+    s1 s2 XCHG
+    64 STU
+    ROT
+    STGRAMS
+    ENDC
+    s0 s2 XCHG
+    8 PUSHPOW2
+    DICTUSETREF
+    7 ROLL
+    storage::save_data INLINECALLDICT
+  }>
+  lend::newLendNativeToken PROC:<{
+    s2 POP
+    storage::load_data INLINECALLDICT
+    s8 PUSH
+    REWRITESTDADDR
+    NIP
+    s0 s2 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    83 THROWIF
+    NEWDICT
+    0 PUSHINT
+    0xf8a7ea5 PUSHINT
+    NEWC
+    32 STU
+    64 STU
+    s12 PUSH
+    STGRAMS
+    s11 PUSH
+    STSLICER
+    b{00} PUSHSLICE
+    STSLICER
+    STDICT
+    0 PUSHINT
+    STGRAMS
+    ENDC
+    DUP
+    CTOS
+    SBITS
+    10 PUSHPOW2DEC
+    LEQ
+    701 THROWIFNOT
+    0 PUSHINT
+    24 PUSHINT
+    NEWC
+    6 STU
+    s8 PUSH
+    STSLICER
+    OVER
+    STGRAMS
+    107 STU
+    s1 s(-1) PUXC
+    STREF
+    SWAP
+    CTOS
+    STSLICER
+    ENDC
+    64 PUSHINT
+    SENDRAWMSG
+    NOW
+    1 PUSHINT
+    2 PUSHINT
+    NEWC
+    2 STU
+    2 STU
+    s0 s11 XCHG2
+    STSLICER
+    s1 s10 XCHG
+    64 STU
+    s0 s10 XCHG2
+    STGRAMS
+    ENDC
+    s0 s8 s8 XCHG3
+    8 PUSHPOW2
+    DICTUSETREF
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s0 s3 XCHG3
+    storage::save_data INLINECALLDICT
+  }>
+  lend::deleteLend PROC:<{
+    3 BLKDROP
+    storage::load_data INLINECALLDICT
+    DUP
+    algebra::getConfiguration INLINECALLDICT
+    s1 s6 XCHG
+    6 BLKDROP
+    s0 s9 XCHG
+    LDGRAMS
+    LDMSGADDR
+    DROP
+    DUP
+    REWRITESTDADDR
+    NIP
+    s0 s4 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    2 LDU
+    7001 PUSHINT
+    SWAP
+    LDMSGADDR
+    s6 s1 PUXC
+    SDEQ
+    s1 s2 XCHG
+    THROWANYIFNOT
+    7006 PUSHINT
+    s0 s2 XCHG
+    2 NEQINT
+    s1 s2 XCHG
+    THROWANYIFNOT
+    64 LDU
+    7002 PUSHINT
+    s2 PUSH
+    0 GTINT
+    THROWANYIFNOT
+    LDGRAMS
+    DROP
+    7004 PUSHINT
+    OVER
+    0 GTINT
+    THROWANYIFNOT
+    7004 PUSHINT
+    s6 s1 XCPU
+    EQUAL
+    s1 s6 XCHG
+    THROWANYIFNOT
+    NOW
+    SWAP
+    SUB
+    s0 s13 XCHG
+    algebra::calculateDepositAPY CALLDICT
+    s4 s(-1) PUXC
+    MUL
+    s0 s13 XCHG
+    1000000000 PUSHINT
+    MUL
+    s1 s13 XCHG
+    MUL
+    31536000000000000 PUSHINT
+    DIV
+    s3 s(-1) PUXC
+    ADD
+    7004 PUSHINT
+    s1 s4 PUXC
+    LESS
+    s1 s4 XCHG
+    THROWANYIF
+    s11 PUSH
+    1 EQINT
+    IF:<{
+      NEWDICT
+      0 PUSHINT
+      0xf8a7ea5 PUSHINT
+      NEWC
+      32 STU
+      64 STU
+      s4 PUSH
+      STGRAMS
+      s3 PUSH
+      STSLICER
+      b{00} PUSHSLICE
+      STSLICER
+      STDICT
+      0 PUSHINT
+      STGRAMS
+      ENDC
+      0 PUSHINT
+      24 PUSHINT
+      NEWC
+      6 STU
+      s0 s4 XCHG2
+      STSLICER
+      s3 PUSH
+      STGRAMS
+      s1 s3 XCHG
+      107 STU
+      s2 s(-1) PUXC
+      STREF
+      s0 s2 XCHG
+      CTOS
+      s1 s2 XCHG
+      STSLICER
+      ENDC
+      64 PUSHINT
+      SENDRAWMSG
+    }>ELSE<{
+      NIP
+    }>
+    s0 s10 XCHG
+    2 EQINT
+    IF:<{
+      0 PUSHINT
+      24 PUSHINT
+      NEWC
+      6 STU
+      s9 PUSH
+      STSLICER
+      ROT
+      STGRAMS
+      107 STU
+      ENDC
+      3 PUSHINT
+      SENDRAWMSG
+    }>ELSE<{
+      DROP
+    }>
+    s8 s8 XCHG2
+    8 PUSHPOW2
+    DICTUDEL
+    DROP
+    7 ROLL
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::calculateDepositAPY PROC:<{
+  }>
+  test::change_admin_minter PROC:<{
+    storage::load_data INLINECALLDICT
+    s5 s6 XCHG
+    6 BLKDROP
+    7000 PUSHINT
+    s2 s3 XCHG2
+    SDEQ
+    s1 s2 XCHG
+    THROWANYIFNOT
+    SWAP
+    LDMSGADDR
+    DROP
+    0 PUSHINT
+    3 PUSHINT
+    NEWC
+    32 STU
+    64 STU
+    SWAP
+    STSLICER
+    ENDC
+    0 PUSHINT
+    24 PUSHINT
+    NEWC
+    6 STU
+    s0 s3 XCHG2
+    STSLICER
+    s2 PUSH
+    STGRAMS
+    s1 s2 XCHG
+    107 STU
+    s1 s(-1) PUXC
+    STREF
+    SWAP
+    CTOS
+    STSLICER
+    ENDC
+    64 PUSHINT
+    SENDRAWMSG
+  }>
+  get_lend_info PROC:<{
+    storage::load_data INLINECALLDICT
+    s1 s7 XCHG
+    7 BLKDROP
+    SWAP
+    REWRITESTDADDR
+    NIP
+    SWAP
+    8 PUSHPOW2
+    DICTUGETOPTREF
+  }>
+  get_borrow_info PROC:<{
+    storage::load_data INLINECALLDICT
+    s2 s7 XCHG
+    7 BLKDROP
+    SWAP
+    REWRITESTDADDR
+    NIP
+    SWAP
+    8 PUSHPOW2
+    DICTUGETOPTREF
+  }>
+  get_owner_address PROC:<{
+    storage::load_data INLINECALLDICT
+    7 BLKDROP
+  }>
+  get_otoken_jetton_address PROC:<{
+    storage::load_data INLINECALLDICT
+    s4 s7 XCHG
+    7 BLKDROP
+  }>
+  get_otoken_minter_address PROC:<{
+    storage::load_data INLINECALLDICT
+    s5 s7 XCHG
+    7 BLKDROP
+  }>
+  get_otoken_x_jetton_address PROC:<{
+    storage::load_data INLINECALLDICT
+    s6 s7 XCHG
+    7 BLKDROP
+  }>
+  getVariableBorrowAPY PROC:<{
+    storage::load_data INLINECALLDICT
+    7 1 BLKDROP2
+    algebra::getConfiguration INLINECALLDICT
+    6 1 BLKDROP2
+    algebra::calculateVariableBorrowAPY CALLDICT
+  }>
+  getAlgebra PROC:<{
+    storage::load_data INLINECALLDICT
+    7 1 BLKDROP2
+    algebra::getConfiguration INLINECALLDICT
+  }>
+  test PROC:<{
+    3 BLKDROP
+    0 PUSHINT
+    DUP
+  }>
+  test1 PROC:<{
+    DROP
+    storage::load_data INLINECALLDICT
+    7 1 BLKDROP2
+    algebra::getConfiguration INLINECALLDICT
+    6 BLKDROP
+    s0 s2 XCHG
+    1000000000 PUSHINT
+    MUL
+    SWAP
+    DIV
+    SWAP
+    MUL
+    100 PUSHINT
+    DIV
+  }>
+  algebra::pow PROCREF:<{
+    1 PUSHINT
+    WHILE:<{
+      OVER
+      0 NEQINT
+    }>DO<{
+      OVER
+      1 PUSHINT
+      AND
+      0 NEQINT
+      IF:<{
+        s2 PUSH
+        MUL
+      }>
+      s2 s0 XCPU
+      MUL
+      SWAP
+      1 RSHIFT#
+      ROT
+    }>
+    2 1 BLKDROP2
+  }>
+  algebra::pack_conf PROC:<{
+    s0 s6 XCHG
+    NEWC
+    64 STU
+    s1 s5 XCHG
+    64 STU
+    s1 s3 XCHG
+    64 STU
+    64 STU
+    64 STU
+    64 STU
+    64 STU
+    ENDC
+  }>
+  algebra::change_ltv PROC:<{
+    storage::load_data INLINECALLDICT
+    algebra::getConfiguration INLINECALLDICT
+    s6 POP
+    7000 PUSHINT
+    s13 s14 PUXC
+    SDEQ
+    s1 s14 XCHG
+    THROWANYIFNOT
+    s0 s13 XCHG
+    64 LDU
+    DROP
+    s0 s6 XCHG
+    s3 s5 XCHG
+    s4 s1 s13 XCHG3
+    2SWAP
+    s1 s12 XCHG
+    algebra::pack_conf CALLDICT
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::change_liquidationThreshold PROC:<{
+    storage::load_data INLINECALLDICT
+    algebra::getConfiguration INLINECALLDICT
+    s5 POP
+    7000 PUSHINT
+    s13 s14 PUXC
+    SDEQ
+    s1 s14 XCHG
+    THROWANYIFNOT
+    s0 s13 XCHG
+    64 LDU
+    DROP
+    s4 s6 XCHG
+    s4 s3 s5 XCHG3
+    s13 s12 s12 XCHG3
+    algebra::pack_conf CALLDICT
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::change_liquidationBonus PROC:<{
+    storage::load_data INLINECALLDICT
+    algebra::getConfiguration INLINECALLDICT
+    s4 POP
+    7000 PUSHINT
+    s13 s14 PUXC
+    SDEQ
+    s1 s14 XCHG
+    THROWANYIFNOT
+    s0 s13 XCHG
+    64 LDU
+    DROP
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s0 s4 XCHG
+    s13 s3 s13 XCHG3
+    s1 s12 XCHG
+    algebra::pack_conf CALLDICT
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::change_borrowingEnabled PROC:<{
+    storage::load_data INLINECALLDICT
+    algebra::getConfiguration INLINECALLDICT
+    s3 POP
+    7000 PUSHINT
+    s13 s14 PUXC
+    SDEQ
+    s1 s14 XCHG
+    THROWANYIFNOT
+    s0 s13 XCHG
+    64 LDU
+    DROP
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s1 s3 XCHG3
+    s13 s12 s12 XCHG3
+    algebra::pack_conf CALLDICT
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::change_isActive PROC:<{
+    storage::load_data INLINECALLDICT
+    algebra::getConfiguration INLINECALLDICT
+    s2 POP
+    7000 PUSHINT
+    s13 s14 PUXC
+    SDEQ
+    s1 s14 XCHG
+    THROWANYIFNOT
+    s0 s13 XCHG
+    64 LDU
+    DROP
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s0 s1 s4 XCHG3
+    s3 s13 XCHG2
+    s1 s12 XCHG
+    algebra::pack_conf CALLDICT
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::change_liquidityRate PROC:<{
+    storage::load_data INLINECALLDICT
+    algebra::getConfiguration INLINECALLDICT
+    NIP
+    7000 PUSHINT
+    s13 s14 PUXC
+    SDEQ
+    s1 s14 XCHG
+    THROWANYIFNOT
+    s0 s13 XCHG
+    256 LDU
+    DROP
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s13 s0 s12 XCHG3
+    algebra::pack_conf CALLDICT
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::change_variableBorrowRate PROC:<{
+    storage::load_data INLINECALLDICT
+    algebra::getConfiguration INLINECALLDICT
+    DROP
+    7000 PUSHINT
+    s13 s14 PUXC
+    SDEQ
+    s1 s14 XCHG
+    THROWANYIFNOT
+    s0 s13 XCHG
+    256 LDU
+    DROP
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s13 s12 s0 XCHG3
+    algebra::pack_conf CALLDICT
+    s5 s7 XCHG
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG
+    storage::save_data INLINECALLDICT
+  }>
+  algebra::newConfiguration PROC:<{
+    OVER
+    1 EQINT
+    IFJMP:<{
+      NIP
+      SWAP
+      algebra::change_ltv CALLDICT
+    }>
+    OVER
+    2 EQINT
+    IFJMP:<{
+      NIP
+      SWAP
+      algebra::change_liquidationThreshold CALLDICT
+    }>
+    OVER
+    3 EQINT
+    IFJMP:<{
+      NIP
+      SWAP
+      algebra::change_liquidationBonus CALLDICT
+    }>
+    OVER
+    4 EQINT
+    IFJMP:<{
+      NIP
+      SWAP
+      algebra::change_borrowingEnabled CALLDICT
+    }>
+    OVER
+    5 EQINT
+    IFJMP:<{
+      NIP
+      SWAP
+      algebra::change_isActive CALLDICT
+    }>
+    OVER
+    6 EQINT
+    IFJMP:<{
+      NIP
+      SWAP
+      algebra::change_liquidityRate CALLDICT
+    }>
+    SWAP
+    7 EQINT
+    IFJMP:<{
+      SWAP
+      algebra::change_variableBorrowRate CALLDICT
+    }>
+    2DROP
+  }>
+  liquidation::calculateLiquidationAmount PROC:<{
+    s0 s3 XCHG
+    1 RSHIFT#
+    s2 PUSH
+    EQUAL
+    68 THROWIFNOT
+    2DUP
+    MUL
+    -ROT
+    MUL
+    ROT
+    MUL
+    100 PUSHINT
+    DIV
+    ADD
+  }>
+  liquidation::liquidationCallNativeToken PROC:<{
+    storage::load_data INLINECALLDICT
+    s0 s11 XCHG
+    LDMSGADDR
+    DROP
+    7005 PUSHINT
+    s10 s1 PUSH2
+    SDEQ
+    THROWANYIF
+    REWRITESTDADDR
+    NIP
+    s0 s2 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s0 s1 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s0 s1 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    2 LDU
+    NIP
+    LDMSGADDR
+    NIP
+    64 LDU
+    LDGRAMS
+    DROP
+    s3 s5 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    LDMSGADDR
+    NIP
+    64 LDU
+    LDGRAMS
+    DROP
+    s0 s5 XCHG
+    1 EQINT
+    67 THROWIFNOT
+    SWAP
+    2 EQINT
+    67 THROWIFNOT
+    s0 s2 XCHG
+    0 NEQINT
+    67 THROWIFNOT
+    SWAP
+    0 NEQINT
+    67 THROWIFNOT
+    s13 PUSH
+    algebra::getConfiguration INLINECALLDICT
+    4 BLKDROP
+    s2 POP
+    s2 s0 s3 XC2PU
+    s13 PUSH
+    liquidation::calculateHFForCustomToken CALLDICT
+    100 LESSINT
+    585 THROWIFNOT
+    s12 s3 s0 XCHG3
+    s1 s10 XCHG
+    liquidation::calculateLiquidationAmount CALLDICT
+    NEWDICT
+    0 PUSHINT
+    0xf8a7ea5 PUSHINT
+    NEWC
+    32 STU
+    64 STU
+    ROT
+    STGRAMS
+    s0 s9 XCHG2
+    STSLICER
+    b{00} PUSHSLICE
+    STSLICER
+    s1 s8 XCHG
+    STDICT
+    0 PUSHINT
+    STGRAMS
+    ENDC
+    0 PUSHINT
+    24 PUSHINT
+    NEWC
+    6 STU
+    s6 PUSH
+    STSLICER
+    OVER
+    STGRAMS
+    107 STU
+    s1 s(-1) PUXC
+    STREF
+    SWAP
+    CTOS
+    STSLICER
+    ENDC
+    64 PUSHINT
+    SENDRAWMSG
+    s7 s5 PUXC
+    8 PUSHPOW2
+    DICTUDEL
+    DROP
+    s7 s6 XCHG2
+    8 PUSHPOW2
+    DICTUDEL
+    DROP
+    s3 s7 XCHG
+    s0 s1 s6 XCHG3
+    s0 s4 XCHG
+    s5 s3 XCHG2
+    storage::save_data INLINECALLDICT
+  }>
+  liquidation::liquidationCallCustomToken PROC:<{
+    storage::load_data INLINECALLDICT
+    s0 s9 XCHG
+    LDGRAMS
+    LDMSGADDR
+    LDMSGADDR
+    DROP
+    7005 PUSHINT
+    s2 s1 PUSH2
+    SDEQ
+    THROWANYIF
+    REWRITESTDADDR
+    NIP
+    s0 s4 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s0 s3 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    <{ TRY:<{ CTOS DROP -1 PUSHINT }>CATCH<{ 2DROP 0 PUSHINT }> }>CONT 1 1 CALLXARGS
+    66 THROWIFNOT
+    s0 s3 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    2 LDU
+    NIP
+    LDMSGADDR
+    NIP
+    64 LDU
+    LDGRAMS
+    DROP
+    s3 s7 PUSH2
+    8 PUSHPOW2
+    DICTUGETOPTREF
+    CTOS
+    2 LDU
+    LDMSGADDR
+    NIP
+    64 LDU
+    LDGRAMS
+    DROP
+    s0 s5 XCHG
+    2 EQINT
+    67 THROWIFNOT
+    SWAP
+    1 EQINT
+    67 THROWIFNOT
+    s0 s2 XCHG
+    0 NEQINT
+    67 THROWIFNOT
+    SWAP
+    0 NEQINT
+    67 THROWIFNOT
+    s13 PUSH
+    algebra::getConfiguration INLINECALLDICT
+    4 BLKDROP
+    s2 POP
+    s2 s0 s3 XC2PU
+    s15 PUSH
+    liquidation::calculateHFForNativeToken CALLDICT
+    100 LESSINT
+    585 THROWIFNOT
+    s4 s3 s0 XCHG3
+    s1 s12 XCHG
+    liquidation::calculateLiquidationAmount CALLDICT
+    0 PUSHINT
+    24 PUSHINT
+    NEWC
+    6 STU
+    s0 s11 XCHG2
+    STSLICER
+    SWAP
+    STGRAMS
+    s1 s9 XCHG
+    107 STU
+    ENDC
+    3 PUSHINT
+    SENDRAWMSG
+    s7 s(-1) PUXC
+    8 PUSHPOW2
+    DICTUDEL
+    DROP
+    s7 s7 XCHG2
+    8 PUSHPOW2
+    DICTUDEL
+    DROP
+    s5 s7 XCHG
+    2 5 BLKSWAP
+    storage::save_data INLINECALLDICT
+  }>
+  tonlink::is_oracle PROC:<{
+    SDEQ
+    IFJMP:<{
+      -1 PUSHINT
+    }>
+    0 PUSHINT
+  }>
+  tonlink::send_request PROC:<{
+    NEWC
+    ROT
+    STSLICER
+    ENDC
+    NEWC
+    s0 s4 XCHG2
+    STSLICER
+    ROT
+    STGRAMS
+    s1 s2 XCHG
+    STREF
+    ENDC
+    0 PUSHINT
+    24 PUSHINT
+    NEWC
+    6 STU
+    s0 s3 XCHG2
+    STSLICER
+    s2 PUSH
+    STGRAMS
+    s1 s2 XCHG
+    107 STU
+    STREF
+    ENDC
+    64 PUSHINT
+    SENDRAWMSG
+  }>
+  tonlink::parse_response PROC:<{
+    LDMSGADDR
+    64 LDU
+    LDGRAMS
+    64 LDU
+    LDREF
+    DROP
+    CTOS
+  }>
+  recv_internal PROC:<{
+    c2 SAVE
+    SAMEALTSAVE
+    s3 POP
+    storage::load_data INLINECALLDICT
+    3 BLKDROP
+    s2 POP
+    s3 POP
+    s0 s3 XCHG
+    utils::parse_sender_address CALLDICT
+    s5 s0 s3 PUSH3
+    tonlink::is_oracle CALLDICT
+    IFNOTJMP:<{
+      2 2 BLKDROP2
+      s0 s4 XCHG
+      32 LDU
+      64 LDU
+      5000 PUSHINT
+      s3 s(-1) PUXC
+      EQUAL
+      IFJMP:<{
+        s4 POP
+        2DROP
+        2 2 BLKDROP2
+        admin::change_admin CALLDICT
+      }>
+      5100 PUSHINT
+      s3 s(-1) PUXC
+      EQUAL
+      IFJMP:<{
+        s4 POP
+        2DROP
+        2 2 BLKDROP2
+        admin::change_wallet_x CALLDICT
+      }>
+      5200 PUSHINT
+      s3 s(-1) PUXC
+      EQUAL
+      IFJMP:<{
+        s4 POP
+        2DROP
+        2 2 BLKDROP2
+        admin::change_minter CALLDICT
+      }>
+      5300 PUSHINT
+      s3 s(-1) PUXC
+      EQUAL
+      IFJMP:<{
+        s4 POP
+        2DROP
+        2 2 BLKDROP2
+        admin::change_wallet_o CALLDICT
+      }>
+      5400 PUSHINT
+      s1 s3 XCHG
+      EQUAL
+      IFJMP:<{
+        3 3 BLKDROP2
+        SWAP
+        algebra::newConfiguration CALLDICT
+      }>
+      2DROP
+      s3 s3 XCHG2
+      tonlink::send_request CALLDICT
+    }>
+    2DROP
+    s2 POP
+    s0 s3 XCHG
+    tonlink::parse_response CALLDICT
+    s3 POP
+    s0 s2 XCHG
+    32 LDU
+    64 LDU
+    0x7362d09c PUSHINT
+    s3 s(-1) PUXC
+    EQUAL
+    IFJMP:<{
+      2 2 BLKDROP2
+      0x15ba8 PUSHINT
+      s2 s(-1) PUXC
+      EQUAL
+      s4 s5 PUSH2
+      SDEQ
+      AND
+      IFJMP:<{
+        s4 POP
+        2DROP
+        2 2 BLKDROP2
+        lend::newLendCustomToken CALLDICT
+        RETALT
+      }>
+      0x15f90 PUSHINT
+      s2 s(-1) PUXC
+      EQUAL
+      s4 s7 PUXC
+      SDEQ
+      s1 s7 XCHG
+      AND
+      IFJMP:<{
+        NIP
+        s2 POP
+        -ROT
+        lend::deleteLend CALLDICT
+        RETALT
+      }>
+      s4 POP
+      0x1adb0 PUSHINT
+      s4 s(-1) PUXC
+      EQUAL
+      s2 s3 PUSH2
+      SDEQ
+      AND
+      IFJMP:<{
+        3 1 BLKDROP2
+        borrow::deleteBorrowCustomToken CALLDICT
+        RETALT
+      }>
+      0x1abb0 PUSHINT
+      s1 s4 XCHG
+      EQUAL
+      s0 s2 XCHG
+      SDEQ
+      AND
+      IFJMP:<{
+        liquidation::liquidationCallCustomToken CALLDICT
+        RETALT
+      }>
+      2DROP
+      RETALT
+    }>
+    NIP
+    s5 POP
+    s5 POP
+    s5 POP
+    0x186a1 PUSHINT
+    s4 s(-1) PUXC
+    EQUAL
+    IFJMP:<{
+      DROP
+      s2 POP
+      s0 s2 XCHG
+      lend::newLendNativeToken CALLDICT
+      RETALT
+    }>
+    0x186a0 PUSHINT
+    s4 s(-1) PUXC
+    EQUAL
+    IFJMP:<{
+      2 3 BLKDROP2
+      borrow::newBorrow CALLDICT
+      RETALT
+    }>
+    0x186a2 PUSHINT
+    s4 s(-1) PUXC
+    EQUAL
+    IFJMP:<{
+      s3 POP
+      s3 s0 s3 XCHG3
+      borrow::deleteBorrowNativeToken CALLDICT
+      RETALT
+    }>
+    0x186a3 PUSHINT
+    s1 s4 XCHG
+    EQUAL
+    IFJMP:<{
+      s3 s0 s3 XCHG3
+      liquidation::liquidationCallNativeToken CALLDICT
+      RETALT
+    }>
+    4 BLKDROP
+    16 PUSHPOW2DEC
+    THROWANY
+  }>
+}END>c

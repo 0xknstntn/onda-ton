@@ -1,0 +1,32 @@
+() admin::change_admin(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        slice new_addr = msg~load_msg_addr();
+        storage::save_data(new_addr, jetton_wallet_x_address, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+}
+
+() admin::change_wallet_x(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        slice new_addr = msg~load_msg_addr();
+        storage::save_data(owner_address, new_addr, minter_otoken_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+}
+
+() admin::change_minter(slice msg, slice sender_address) impure {
+	(slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        slice new_addr = msg~load_msg_addr();
+        storage::save_data(owner_address, jetton_wallet_x_address, new_addr, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+}
+
+() admin::change_wallet_o(slice msg, slice sender_address) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice minter_otoken_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        throw_unless(err::no_admin(), equal_slices(owner_address, sender_address));
+        slice new_addr = msg~load_msg_addr();
+        storage::save_data(owner_address, jetton_wallet_x_address, minter_otoken_address, new_addr, oracle, borrow, lend, algebra);
+        return ();
+}
+
