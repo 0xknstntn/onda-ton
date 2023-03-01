@@ -1,0 +1,167 @@
+int liquidation::calculateHFForXToken(int collateral, int liquidationThreshold, int borrow, int price) impure {
+        ;;return ((collateral * liquidationThreshold) / borrow);
+        return ((((collateral * price) / 1000000000) * liquidationThreshold * 1000000000) / borrow) / 1000000000;
+}
+
+int liquidation::calculateHFForYToken(int collateral, int liquidationThreshold, int borrow, int price) impure {
+        ;;return ((collateral * liquidationThreshold) / borrow);
+        return ((((collateral * 1000000000) / price) * liquidationThreshold * 1000000000) / borrow) / 1000000000;
+}
+
+int liquidation::calculateLiquidationAmount(int borrow_amount, int liq_amount, int price, int liquidationBonus) impure {
+        throw_unless(0x44, ((borrow_amount / 2)) == liq_amount);
+        return (
+                (
+                        (liq_amount * price) + 
+                        (
+                                (
+                                        (liq_amount * price) * liquidationBonus
+                                ) / 100 
+                        ) 
+                )
+        );
+ 
+} 
+
+
+() liquidation::liquidationCallXToken(slice all_msg, int price) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        
+        int input_amount = all_msg~load_grams();
+        slice liquidator = all_msg~load_msg_addr();
+        slice borrower_address = all_msg~load_msg_addr();
+        
+        {- the liquidator cannot be a borrowers-}
+        throw_if(err::equal_address(), equal_slices(liquidator, borrower_address));
+
+        {- Get and check for exist -}
+        var (_, key_addr) = parse_std_addr(borrower_address);
+        throw_unless(0x42, check_slice_for_empty?(borrow.udict_get_maybe_ref(256, key_addr)));
+        throw_unless(0x42, check_slice_for_empty?(lend.udict_get_maybe_ref(256, key_addr)));
+
+        slice lender_info = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeLendAmount = lender_info~load_uint(2);
+        int statusLend = lender_info~load_uint(2);
+        lender_info~load_msg_addr();
+        int lender_time = lender_info~load_uint(64);
+        int collateral = lender_info~load_grams();
+        
+        slice borrower_info = (borrow.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeBorrowAmount = borrower_info~load_uint(2);
+        borrower_info~load_msg_addr();
+        int borrower_time = borrower_info~load_uint(64);
+        int borrow_amount = borrower_info~load_grams();
+        
+        {- Record check -}
+        throw_unless(0x43, typeLendAmount == 2);
+        throw_unless(0x44, typeBorrowAmount == 1);
+        throw_unless(0x45, lender_time != 0);
+        throw_unless(0x46, borrower_time != 0);
+
+        {- Calculate block -}
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        int hf = liquidation::calculateHFForYToken(collateral, liquidationThreshold, borrow_amount, price);
+
+        {- Check HF -}
+        throw_unless(0x249, hf < 100);
+
+        int return_amount = liquidation::calculateLiquidationAmount(borrow_amount, input_amount, price, liquidationBonus);
+
+        var body = begin_cell()
+                .store_uint(op::transfer(), 32)
+                .store_uint(0, 64)
+                .store_grams(return_amount)
+                .store_slice(liquidator)
+                .store_slice(utils::null_addr())
+                .store_dict(new_dict())
+                .store_grams(0)
+        .end_cell();
+
+        var msg = begin_cell()
+              .store_uint(0x18, 6)
+              .store_slice(jetton_wallet_x_address)
+              .store_grams(0)
+              .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+              .store_ref(body)
+              .store_slice(begin_parse(body))
+        .end_cell();
+        send_raw_message(msg, 64);
+
+        lend~udict_delete?(256, key_addr);
+        borrow~udict_delete?(256, key_addr);
+
+        storage::save_data(owner_address, jetton_wallet_x_address, jetton_wallet_y_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+
+        return ();
+}
+
+() liquidation::liquidationCallYToken(slice all_msg, int price) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+
+        int input_amount = all_msg~load_grams();
+        slice liquidator = all_msg~load_msg_addr();
+        slice borrower_address = all_msg~load_msg_addr();
+
+        {- the liquidator cannot be a borrowers-}
+        throw_if(err::equal_address(), equal_slices(liquidator, borrower_address));
+
+        {- Get and check for exist -}
+        var (_, key_addr) = parse_std_addr(borrower_address);
+        throw_unless(0x42, check_slice_for_empty?(borrow.udict_get_maybe_ref(256, key_addr)));
+        throw_unless(0x42, check_slice_for_empty?(lend.udict_get_maybe_ref(256, key_addr)));
+
+        slice lender_info = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeLendAmount = lender_info~load_uint(2);
+        int statusLend = lender_info~load_uint(2);
+        lender_info~load_msg_addr();
+        int lender_time = lender_info~load_uint(64);
+        int collateral = lender_info~load_grams();
+        
+        slice borrower_info = (borrow.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeBorrowAmount = borrower_info~load_uint(2);
+        borrower_info~load_msg_addr();
+        int borrower_time = borrower_info~load_uint(64);
+        int borrow_amount = borrower_info~load_grams();
+        
+        {- Record check -}
+        throw_unless(0x43, typeLendAmount == 1);
+        throw_unless(0x44, typeBorrowAmount == 2);
+        throw_unless(0x45, lender_time != 0);
+        throw_unless(0x46, borrower_time != 0);
+
+        {- Calculate block -}
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        int hf = liquidation::calculateHFForXToken(collateral, liquidationThreshold, borrow_amount, price);
+
+        {- Check HF -}
+        throw_unless(0x249, hf < 100);
+
+        int return_amount = liquidation::calculateLiquidationAmount(borrow_amount, input_amount, price, liquidationBonus);
+
+        var body = begin_cell()
+                .store_uint(op::transfer(), 32)
+                .store_uint(0, 64)
+                .store_grams(return_amount)
+                .store_slice(liquidator)
+                .store_slice(utils::null_addr())
+                .store_dict(new_dict())
+                .store_grams(0)
+        .end_cell();
+
+        var msg = begin_cell()
+              .store_uint(0x18, 6)
+              .store_slice(jetton_wallet_y_address)
+              .store_grams(0)
+              .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+              .store_ref(body)
+              .store_slice(begin_parse(body))
+        .end_cell();
+        send_raw_message(msg, 64);
+
+        lend~udict_delete?(256, key_addr);
+        borrow~udict_delete?(256, key_addr);
+
+        storage::save_data(owner_address, jetton_wallet_x_address, jetton_wallet_y_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+
+        return ();
+}

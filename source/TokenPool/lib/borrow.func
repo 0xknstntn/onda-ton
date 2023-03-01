@@ -1,0 +1,220 @@
+() borrow::newBorrow(slice in_msg_body, slice sender_address, int price) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        
+        {- Check for create lend -}
+        var (_, key_addr) = parse_std_addr(sender_address);
+        throw_unless(0x42, check_slice_for_empty?(lend.udict_get_maybe_ref(256, key_addr)));
+        slice lender_info = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeAmount = lender_info~load_uint(2);
+        int statusLender = lender_info~load_uint(2);
+        lender_info~load_msg_addr();
+        int old_time = lender_info~load_uint(64);
+        int lend_amount = lender_info~load_grams();
+
+        {- Calculate max borrow amount for user -}
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        
+        {- check HF -}
+        int typeBorrowAmount = 0;
+        int mainBorrowAmount = 0;
+        
+        if(typeAmount == 1) {
+                int borrow_amount = algebra::getMaxBorrowValueForXToken(ltv, price, sender_address, lend_amount);
+                int hf = liquidation::calculateHFForXToken(lend_amount, liquidationThreshold, borrow_amount, price);
+                throw_unless(0x249, hf > 105);
+                cell body = begin_cell()
+                        .store_uint(op::transfer(), 32)
+                        .store_uint(0, 64)
+                        .store_grams(borrow_amount)
+                        .store_slice(sender_address)
+                        .store_slice(utils::null_addr())
+                        .store_dict(new_dict())
+                        .store_grams(0)
+                .end_cell();
+                var msg = begin_cell()
+                        .store_uint(0x18, 6)
+                        .store_slice(jetton_wallet_y_address)
+                        .store_grams(0)
+                        .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                        .store_ref(body)
+                .end_cell();
+                send_raw_message(msg, 64);
+                typeBorrowAmount = 2;
+                mainBorrowAmount = borrow_amount;
+        }
+        
+        if(typeAmount == 2) {
+                int borrow_amount = algebra::getMaxBorrowValueForYToken(ltv, price, sender_address, lend_amount);
+                int hf = liquidation::calculateHFForYToken(lend_amount, liquidationThreshold, borrow_amount, price);
+                throw_unless(0x249, hf > 105);
+                cell body = begin_cell()
+                        .store_uint(op::transfer(), 32)
+                        .store_uint(0, 64)
+                        .store_grams(borrow_amount)
+                        .store_slice(sender_address)
+                        .store_slice(utils::null_addr())
+                        .store_dict(new_dict())
+                        .store_grams(0)
+                .end_cell();
+                var msg = begin_cell()
+                        .store_uint(0x18, 6)
+                        .store_slice(jetton_wallet_x_address)
+                        .store_grams(0)
+                        .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                        .store_ref(body)
+                .end_cell();
+                send_raw_message(msg, 64);
+                typeBorrowAmount = 1;
+                mainBorrowAmount = borrow_amount;
+        }
+        var (_, key_addr) = parse_std_addr(sender_address);
+
+        cell borrowCell = begin_cell()
+                .store_uint(typeBorrowAmount, 2)
+                .store_slice(sender_address)
+                ;;.store_uint(((now() - (31536000)), 64)) ;; for test
+                .store_uint(now(), 64)
+                .store_grams(mainBorrowAmount)
+                .store_uint(price, 64)
+        .end_cell();
+        borrow~udict_set_ref(256, key_addr, borrowCell);       
+
+        cell lendCell = begin_cell()
+                .store_uint(typeAmount, 2)
+                .store_uint(2, 2)
+                .store_slice(sender_address)
+                .store_uint(now(), 64)
+                .store_grams(lend_amount)
+        .end_cell();
+        lend~udict_set_ref(256, key_addr, lendCell);
+
+        storage::save_data(owner_address, jetton_wallet_x_address, jetton_wallet_y_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+}
+
+() borrow::deleteBorrowXToken(slice in_msg_body, int price) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        
+        int amount = in_msg_body~load_grams();
+        slice sender_address = in_msg_body~load_msg_addr();
+        var (_, key_addr) = parse_std_addr(sender_address);
+
+        throw_unless(0x42, check_slice_for_empty?(borrow.udict_get_maybe_ref(256, key_addr)));
+        throw_unless(0x42, check_slice_for_empty?(lend.udict_get_maybe_ref(256, key_addr)));
+
+        slice lender_info = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeAmount = lender_info~load_uint(2);
+        lender_info~load_uint(2);
+        lender_info~load_msg_addr();
+        lender_info~load_uint(64);
+        int lend_amount = lender_info~load_grams();
+
+        slice borrow_info = (borrow.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeBorrowAmount = borrow_info~load_uint(2);
+        borrow_info~load_msg_addr();       
+        int time = borrow_info~load_uint(64);
+        int borrow_amount = borrow_info~load_grams();
+
+        throw_if(err::wrong_amount(), borrow_amount <= 0);
+
+        {- check HF -}
+        int hf = liquidation::calculateHFForYToken(lend_amount, liquidationThreshold, borrow_amount, price);
+        
+        throw_unless(0x249, hf > 105);
+
+        int borrow_time = (now() - time);
+        if(borrow_time == 0) { borrow_time += 1; }
+        throw_if(err::wrong_time(), borrow_time == 0);
+        int variableBorrowAPY = algebra::calculateVariableBorrowAPY(variableBorrowRate);
+
+        int plus_balance = (borrow_amount + (
+                (
+                        (
+                                (borrow_amount) * (variableBorrowAPY) * (borrow_time * 1000000000)
+                        ) / (31536000 * 1000000000)
+                ) / 1000000000
+                )
+        );
+
+        throw_unless(err:not_enough(), amount >= plus_balance);
+
+        borrow~udict_delete?(256, key_addr);
+
+        cell lendCell = begin_cell()
+                .store_uint(typeAmount, 2)
+                .store_uint(1, 2)
+                .store_slice(sender_address)
+                .store_uint(now(), 64)
+                .store_grams(lend_amount)
+        .end_cell();
+        lend~udict_set_ref(256, key_addr, lendCell);
+
+        storage::save_data(owner_address, jetton_wallet_x_address, jetton_wallet_y_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+}
+
+() borrow::deleteBorrowYToken(slice in_msg_body, int price) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        
+        int amount = in_msg_body~load_grams();
+        slice sender_address = in_msg_body~load_msg_addr();
+
+
+        var (_, key_addr) = parse_std_addr(sender_address);
+
+        throw_unless(0x42, check_slice_for_empty?(borrow.udict_get_maybe_ref(256, key_addr)));
+        throw_unless(0x42, check_slice_for_empty?(lend.udict_get_maybe_ref(256, key_addr)));
+
+        slice lender_info = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeAmount = lender_info~load_uint(2);
+        lender_info~load_uint(2);
+        lender_info~load_msg_addr();
+        lender_info~load_uint(64);
+        int lend_amount = lender_info~load_grams();
+
+        slice borrow_info = (borrow.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeBorrowAmount = borrow_info~load_uint(2);
+        borrow_info~load_msg_addr();       
+        int time = borrow_info~load_uint(64);
+        int borrow_amount = borrow_info~load_grams();
+
+        throw_if(err::wrong_amount(), borrow_amount <= 0);
+
+        {- check HF -}
+        int hf = liquidation::calculateHFForXToken(lend_amount, liquidationThreshold, borrow_amount, price);
+        
+        throw_unless(0x249, hf > 105);
+
+        int borrow_time = (now() - time);
+        if(borrow_time == 0) { borrow_time += 1; }
+        throw_if(err::wrong_time(), borrow_time == 0);
+ 
+        int variableBorrowAPY = algebra::calculateVariableBorrowAPY(variableBorrowRate);
+
+        int plus_balance = (borrow_amount + (
+                (
+                        (
+                                (borrow_amount) * (variableBorrowAPY) * (borrow_time * 1000000000)
+                        ) / (31536000 * 1000000000)
+                ) / 1000000000
+                )
+        );
+
+        throw_unless(err:not_enough(), amount >= plus_balance);
+
+        borrow~udict_delete?(256, key_addr);
+
+        cell lendCell = begin_cell()
+                .store_uint(typeAmount, 2)
+                .store_uint(1, 2)
+                .store_slice(sender_address)
+                .store_uint(now(), 64)
+                .store_grams(lend_amount)
+        .end_cell();
+        lend~udict_set_ref(256, key_addr, lendCell);
+
+        storage::save_data(owner_address, jetton_wallet_x_address, jetton_wallet_y_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+}

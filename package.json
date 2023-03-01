@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter mochawesome -r ts-node/register 'tests/**/**/*.ts'",
+    "test-NativePool": "mocha --reporter mochawesome -r ts-node/register 'tests/NativePool/**/*.ts'",
+    "test-TokenPool": "mocha --reporter mochawesome -r ts-node/register 'tests/TokenPool/**/*.ts'",
     "build": "./scripts/build.sh",
     "run": "npm run build & npm run test"
   },
