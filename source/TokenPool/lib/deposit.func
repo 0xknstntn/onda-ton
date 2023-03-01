@@ -1,0 +1,142 @@
+() deposit::newDepositXToken(slice in_msg_body) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        int input_amount = in_msg_body~load_grams();
+        slice sender_address = in_msg_body~load_msg_addr();
+        var (_, key_addr) = parse_std_addr(sender_address);
+        throw_if(0x53, check_slice_for_empty?(lend.udict_get_maybe_ref(256, key_addr)));
+
+        cell body = begin_cell()
+                .store_uint(op::transfer(), 32)
+                .store_uint(0, 64)
+                .store_grams(input_amount)
+                .store_slice(sender_address)
+                .store_slice(utils::null_addr())
+                .store_dict(new_dict())
+                .store_grams(0)
+        .end_cell();
+        throw_unless(701, slice_bits(body.begin_parse()) <= 1023);
+
+        cell msg = begin_cell()
+                .store_uint(0x18, 6)
+                .store_slice(jetton_wallet_otoken_address)
+                .store_grams(0)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .store_ref(body)
+                .store_slice(body.begin_parse())
+        .end_cell();
+        send_raw_message(msg, 64);
+
+        cell lendCell = begin_cell()
+                .store_uint(1, 2)
+                .store_uint(1, 2)
+                .store_slice(sender_address)
+                .store_uint(now(), 64)
+                .store_grams(input_amount)
+        .end_cell();
+        lend~udict_set_ref(256, key_addr, lendCell);
+
+        storage::save_data(owner_address, jetton_wallet_x_address, jetton_wallet_y_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+}
+
+() deposit::newDepositYToken(slice in_msg_body) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        int input_amount = in_msg_body~load_grams();
+        slice sender_address = in_msg_body~load_msg_addr();
+        var (_, key_addr) = parse_std_addr(sender_address);
+        throw_if(0x53, check_slice_for_empty?(lend.udict_get_maybe_ref(256, key_addr)));
+
+        cell body = begin_cell()
+                .store_uint(op::transfer(), 32)
+                .store_uint(0, 64)
+                .store_grams(input_amount)
+                .store_slice(sender_address)
+                .store_slice(utils::null_addr())
+                .store_dict(new_dict())
+                .store_grams(0)
+        .end_cell();
+
+        cell msg = begin_cell()
+                .store_uint(0x18, 6)
+                .store_slice(jetton_wallet_otoken_address)
+                .store_grams(0)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .store_ref(body)
+                .store_slice(body.begin_parse())
+        .end_cell();
+        send_raw_message(msg, 64);
+
+        cell lendCell = begin_cell()
+                .store_uint(2, 2)
+                .store_uint(1, 2)
+                .store_slice(sender_address)
+                .store_uint(now(), 64)
+                .store_grams(input_amount)
+        .end_cell();
+        lend~udict_set_ref(256, key_addr, lendCell);
+        storage::save_data(owner_address, jetton_wallet_x_address, jetton_wallet_y_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+}
+
+() deposit::deleteDeposit(slice in_msg_body) impure {
+        (slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+        (int ltv, int liquidationThreshold, int liquidationBonus, int borrowingEnabled, int isActive, int liquidityRate, int variableBorrowRate) = algebra::getConfiguration(algebra);
+        int input_amount = in_msg_body~load_grams();
+        slice sender_address = in_msg_body~load_msg_addr();
+
+        var (_, key_addr) = parse_std_addr(sender_address);
+        
+        slice lendSlice = (lend.udict_get_maybe_ref(256, key_addr)).begin_parse();
+        int typeLendAmount = lendSlice~load_uint(2);
+        int status = lendSlice~load_uint(2);
+        slice lender_address = lendSlice~load_msg_addr();
+        int time = lendSlice~load_uint(64);
+        int lend_amount = lendSlice~load_grams();
+
+        ;;throw_unless(err::not_equal(), equal_slices(sender_address, lender_address));
+        throw_unless(err::blocked(), status != 2);
+        throw_unless(err::wrong_time(), time > 0);
+        throw_unless(err::wrong_amount(), lend_amount > 0);
+        throw_unless(err::wrong_amount(), input_amount == lend_amount);
+
+        int lend_time = (now() - time);
+        int depositAPY = algebra::calculateDepositAPY(liquidityRate);
+        int plus_balance = lend_amount + ((lend_amount) * (depositAPY) * (lend_time * 1000000000)) / (31536000 * 1000000000);
+        throw_if(err::wrong_amount(), plus_balance < lend_amount);
+
+        var body = begin_cell()
+                .store_uint(op::transfer(), 32)
+                .store_uint(0, 64)
+                .store_grams(plus_balance)
+                .store_slice(sender_address)
+                .store_slice(utils::null_addr())
+                .store_dict(new_dict())
+                .store_grams(0)
+        .end_cell();
+
+        if(typeLendAmount == 1){
+                var msg = begin_cell()
+                        .store_uint(0x18, 6)
+                        .store_slice(jetton_wallet_x_address)
+                        .store_grams(0)
+                        .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                        .store_ref(body)
+                .end_cell();
+                send_raw_message(msg, 64);
+        }
+        if(typeLendAmount == 2){
+                var msg = begin_cell()
+                        .store_uint(0x18, 6)
+                        .store_slice(jetton_wallet_y_address)
+                        .store_grams(0)
+                        .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                        .store_ref(body)
+                .end_cell();
+                send_raw_message(msg, 64);
+        }
+        lend~udict_delete?(256, key_addr);
+
+        storage::save_data(owner_address, jetton_wallet_x_address, jetton_wallet_y_address, jetton_wallet_otoken_address, oracle, borrow, lend, algebra);
+        return ();
+
+}

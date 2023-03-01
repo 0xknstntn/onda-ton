@@ -1,0 +1,85 @@
+{-
+	@title: Onda Lending Pool
+	@custom: version 1.0
+	@author Konstantin Klyuchnikov (knstntn.asuoki.eth)
+-}
+
+#include "storage.func";
+#include "utils/utils.func";
+#include "utils/codes.func";
+#include "utils/exitcodes.func";
+#include "lib/admin.func";
+#include "lib/borrow.func";
+#include "lib/deposit.func";
+#include "lib/get-methods.func";
+#include "lib/algebra.func";
+#include "lib/liquidation.func";
+#include "lib/tonlink-lib.func";
+
+ 
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+	(slice owner_address, slice jetton_wallet_x_address, slice jetton_wallet_y_address, slice jetton_wallet_otoken_address, slice oracle, cell borrow, cell lend, cell algebra) = storage::load_data();
+	slice sender_address = utils::parse_sender_address(in_msg_full);
+	slice full_msg = in_msg_body; ;; Save full msg
+	if(tonlink::is_oracle(sender_address, oracle)){
+		(slice who_send, int time, int value, int price, slice all_msg) = tonlink::parse_response(in_msg_body);
+		int op = all_msg~load_uint(32);
+		int query_id = all_msg~load_uint(64);
+
+		if (op == op::transfer_notification()) {
+			{- Deposit logic -}
+			if ((query_id == query::newDepositXToken()) & (equal_slices(who_send, jetton_wallet_x_address))) {
+				deposit::newDepositXToken(all_msg);
+				return ();
+			}
+			if ((query_id == query::newDepositYToken()) & (equal_slices(who_send, jetton_wallet_y_address))) {
+				deposit::newDepositYToken(all_msg);
+				return ();
+			}
+			if ((query_id == query::deleteDeposit()) & (equal_slices(who_send, jetton_wallet_otoken_address))) {
+				deposit::deleteDeposit(all_msg);
+				return ();
+			}
+
+			{- Borrow logic -}
+			if ((query_id == query::deleteBorrowXToken()) & (equal_slices(who_send, jetton_wallet_x_address))) {
+				borrow::deleteBorrowXToken(all_msg, price);
+				return ();
+			}
+			if ((query_id == query::deleteBorrowYToken()) & (equal_slices(who_send, jetton_wallet_y_address))) {
+				borrow::deleteBorrowYToken(all_msg, price);
+				return ();
+			}
+
+			{- Liquidation logic -}
+			if (query_id == query::liquidationCallXToken()) & (equal_slices(who_send, jetton_wallet_x_address)) {
+				liquidation::liquidationCallXToken(all_msg, price);
+				return ();
+			}
+			if (query_id == query::liquidationCallYToken()) & (equal_slices(who_send, jetton_wallet_y_address)) {
+				liquidation::liquidationCallYToken(all_msg, price);
+				return ();
+			}
+			return ();
+		}
+		{- Borrow logic -}
+		if (op == op::newBorrow()) { 
+			borrow::newBorrow(all_msg, who_send, price); 
+			return ();  
+		}
+	} else {
+		int op = in_msg_body~load_uint(32);
+		int query_id = in_msg_body~load_uint(64);
+		if (op == admin_op::change_admin()) { admin::change_admin(in_msg_body, sender_address); return (); }  
+		if (op == admin_op::change_wallet_x()) { admin::change_wallet_x(in_msg_body, sender_address); return ();} 
+		if (op == admin_op::change_wallet_y()) { admin::change_wallet_y(in_msg_body, sender_address); return ();}
+		if (op == admin_op::change_wallet_o()) { admin::change_wallet_o(in_msg_body, sender_address); return ();}
+		if (op == admin_op::configuration()) { algebra::newConfiguration(sender_address, query_id, in_msg_body); return (); }
+		
+		tonlink::send_request(sender_address, msg_value, full_msg, oracle);
+		return ();
+
+	}
+
+	throw(0xffff); 
+}  

@@ -1,2 +1,5 @@
 build
 node_modules
+mochawesome-report
+output
+**/.DS_Store
